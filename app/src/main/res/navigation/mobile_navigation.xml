@@ -14,13 +14,13 @@
     <fragment
         android:id="@+id/navigation_favorite"
         android:name="com.yosuahaloho.mypropergitap.ui.favorite.FavoriteFragment"
-        android:label="fragment_favorite"
+        android:label="Favorite"
         tools:layout="@layout/fragment_favorite" />
 
     <fragment
         android:id="@+id/navigation_profil"
         android:name="com.yosuahaloho.mypropergitap.ui.profile.ProfileFragment"
-        android:label="fragment_profile"
+        android:label="Profil"
         tools:layout="@layout/fragment_profile" />
 
 </navigation>

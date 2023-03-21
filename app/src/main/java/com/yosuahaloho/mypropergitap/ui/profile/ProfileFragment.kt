@@ -6,27 +6,30 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.yosuahaloho.mypropergitap.R
+import com.yosuahaloho.mypropergitap.databinding.FragmentProfileBinding
+import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 
 class ProfileFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = ProfileFragment()
-    }
+    private var _binding: FragmentProfileBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var viewModel: ProfileViewModel
+    private val factory by lazy { ViewModelFactory.getInstance(requireActivity()) }
+    private val profileViewModel: ProfileViewModel by viewModels { factory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
-    }
+    ): View {
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(ProfileViewModel::class.java)
-        // TODO: Use the ViewModel
+        profileViewModel.text.observe(viewLifecycleOwner) {
+            binding.textA.text = it
+        }
+
+        return binding.root
     }
 
 }

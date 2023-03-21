@@ -6,8 +6,11 @@
     tools:context=".ui.favorite.FavoriteFragment">
 
     <TextView
+        android:id="@+id/textA"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="20sp"
         android:text="Hello" />
 
 </FrameLayout>

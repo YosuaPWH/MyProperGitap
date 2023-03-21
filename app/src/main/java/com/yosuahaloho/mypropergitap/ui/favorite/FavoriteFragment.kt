@@ -6,27 +6,31 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.yosuahaloho.mypropergitap.R
+import com.yosuahaloho.mypropergitap.databinding.FragmentFavoriteBinding
+import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 
 class FavoriteFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = FavoriteFragment()
-    }
+    private var _binding: FragmentFavoriteBinding? = null
+    private val binding get() = _binding!!
 
-    private lateinit var viewModel: FavoriteViewModel
+    private val factory by lazy { ViewModelFactory.getInstance(requireActivity()) }
+    private val favoriteViewModel: FavoriteViewModel by viewModels { factory }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_favorite, container, false)
+    ): View {
+        _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
+
+        favoriteViewModel.text.observe(viewLifecycleOwner) {
+            binding.textA.text = it
+        }
+
+        return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(FavoriteViewModel::class.java)
-        // TODO: Use the ViewModel
-    }
 
 }
