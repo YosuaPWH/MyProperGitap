@@ -15,4 +15,5 @@ class HomeViewModel(private val userRepository: UserRepository) : ViewModel() {
 
 
     fun getDefaultUser() = userRepository.getDefaultUser().asLiveData()
+    fun searchUser(query: String) = userRepository.getSearchUser(query).asLiveData()
 }

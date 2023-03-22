@@ -16,10 +16,9 @@ interface ApiService {
     ): List<User>
 
     @GET("search/users")
-    fun searchUser(
-        @Query("q") username: String,
-        @Query("per_page") limitNumberUser: Int = 10
-    ): Call<ResponseSearch>
+    suspend fun searchUser(
+        @Query("q") username: String
+    ): ResponseSearch
 
     @GET("users/{username}")
     suspend fun getDetailUser(

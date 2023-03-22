@@ -3,4 +3,8 @@
     <string name="title_home">Home</string>
     <string name="title_favorite">Favorite</string>
     <string name="title_profil">Profil</string>
+    <string name="tablayout">TabLayout</string>
+    <string name="following">Following</string>
+    <string name="repositories">Repositories</string>
+    <string name="followers">Followers</string>
 </resources>

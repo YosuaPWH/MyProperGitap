@@ -23,7 +23,7 @@ object ApiConfig {
 
         val authInterceptor = Interceptor { chain ->
             val requestHeaders = chain.request().newBuilder()
-                .addHeader("Authorization", BuildConfig.API_KEY)
+                .addHeader("Authorization", "Bearer ${BuildConfig.API_KEY}")
                 .build()
 
             chain.proceed(requestHeaders)
@@ -38,7 +38,7 @@ object ApiConfig {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(client)
+//            .client(client)
             .build()
 
         retrofit.create(ApiService::class.java)

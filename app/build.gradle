@@ -18,7 +18,7 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_KEY", '"Bearer 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"')
+        buildConfigField("String", "API_KEY", '"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"')
     }
 
     buildTypes {
@@ -76,4 +76,7 @@ dependencies {
 
     // Shimmer
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    // Lottie
+    implementation "com.airbnb.android:lottie:6.0.0"
 }

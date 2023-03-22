@@ -1,5 +1,6 @@
 package com.yosuahaloho.mypropergitap.repos
 
+import android.util.Log
 import com.yosuahaloho.mypropergitap.repos.local.dao.FavoriteUserDao
 import com.yosuahaloho.mypropergitap.repos.remote.ApiService
 import kotlinx.coroutines.flow.flow
@@ -22,6 +23,16 @@ class UserRepository private constructor(private val apiService: ApiService, pri
         try {
             val response = apiService.getDetailUser(username)
             emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+
+    fun getSearchUser(query: String) = flow {
+        emit(Result.Loading)
+        try {
+            val response = apiService.searchUser(query)
+            emit(Result.Success(response.items))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
         }

@@ -25,9 +25,7 @@ class ProfileFragment : Fragment() {
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-        profileViewModel.text.observe(viewLifecycleOwner) {
-            binding.textA.text = it
-        }
+
 
         return binding.root
     }
