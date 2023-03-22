@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/shimmer_color"
     android:layout_height="match_parent"
+    android:background="@color/shimmer_color"
     tools:context=".ui.home.HomeFragment">
 
     <com.google.android.material.card.MaterialCardView
@@ -22,33 +22,57 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:iconifiedByDefault="false"
+            android:focusable="false"
             app:queryBackground="@android:color/transparent"
             app:queryHint="Search..." />
 
     </com.google.android.material.card.MaterialCardView>
 
-    <!--    <androidx.recyclerview.widget.RecyclerView-->
-    <!--        android:id="@+id/rv_user"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="0dp"-->
-    <!--        app:layout_constraintTop_toBottomOf="@id/searchBar"-->
-    <!--        app:layout_constraintStart_toStartOf="parent"-->
-    <!--        app:layout_constraintEnd_toEndOf="parent"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        tools:listitem="@layout/user_item_list"/>-->
-
-    <com.skydoves.androidveil.VeilRecyclerFrameView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_user"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/searchBar"
-        app:veilFrame_isItemWrapContentHeight="true"
-        app:veilFrame_isItemWrapContentWidth="true"
-        app:veilFrame_layout="@layout/user_item_list"
-        app:veilFrame_shimmerEnable="true"
-        app:veilFrame_veiled="true" />
+        tools:listitem="@layout/user_item_list" />
+
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/loading_shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/searchBar">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/user_item_shimmer_placeholder" />
+                <include layout="@layout/user_item_shimmer_placeholder" />
+                <include layout="@layout/user_item_shimmer_placeholder" />
+                <include layout="@layout/user_item_shimmer_placeholder" />
+                <include layout="@layout/user_item_shimmer_placeholder" />
+                <include layout="@layout/user_item_shimmer_placeholder" />
+                <include layout="@layout/user_item_shimmer_placeholder" />
+                <include layout="@layout/user_item_shimmer_placeholder" />
+                <include layout="@layout/user_item_shimmer_placeholder" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

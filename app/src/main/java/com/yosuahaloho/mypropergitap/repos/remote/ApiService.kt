@@ -22,9 +22,9 @@ interface ApiService {
     ): Call<ResponseSearch>
 
     @GET("users/{username}")
-    fun getDetailUser(
+    suspend fun getDetailUser(
         @Path("username") username: String
-    ): Call<DetailUser>
+    ): DetailUser
 
     @GET("users/{username}/followers")
     fun getFollowers(

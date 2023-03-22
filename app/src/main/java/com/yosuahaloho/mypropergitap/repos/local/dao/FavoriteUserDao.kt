@@ -3,7 +3,6 @@ package com.yosuahaloho.mypropergitap.repos.local.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.yosuahaloho.mypropergitap.repos.local.entity.FavoriteUser
-import com.yosuahaloho.mypropergitap.repos.model.User
 
 @Dao
 interface FavoriteUserDao {

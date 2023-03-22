@@ -1,18 +1,14 @@
 package com.yosuahaloho.mypropergitap.ui.home
 
-import android.graphics.Path.Direction
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.yosuahaloho.mypropergitap.utils.Result
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.facebook.shimmer.Shimmer
-import com.yosuahaloho.mypropergitap.R
 import com.yosuahaloho.mypropergitap.databinding.FragmentHomeBinding
 import com.yosuahaloho.mypropergitap.utils.ListUserAdapter
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
@@ -32,53 +28,44 @@ class HomeFragment : Fragment() {
     ): View {
 
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-
-
-//        binding.rvUser.layoutManager = LinearLayoutManager(context)
-        binding.rvUser.setLayoutManager(LinearLayoutManager(context))
-        binding.rvUser.shimmerEnable = true
-        val shimmer = Shimmer.ColorHighlightBuilder()
-            .setBaseColor(ContextCompat.getColor(requireContext(), R.color.purple_200))
-            .setHighlightColor(ContextCompat.getColor(requireContext(), R.color.black))
-            .setBaseAlpha(1f)
-            .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
-            .setHighlightAlpha(1f)
-            .build()
-
-        binding.rvUser.shimmer = shimmer
-        binding.rvUser.addVeiledItems(10)
-        binding.rvUser.veil()
-
+        binding.rvUser.adapter = ListUserAdapter(emptyList())
+        startShimmer()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        binding.rvUser.getRecyclerView()
-
-
-
         homeViewModel.getDefaultUser().observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
-                    binding.rvUser.unVeil()
-                    binding.rvUser.shimmerEnable = false
+                    stopShimmer()
                     Log.d("Home", it.data.toString())
-                    binding.rvUser.getRecyclerView().adapter = ListUserAdapter(it.data)
+                    binding.rvUser.layoutManager = LinearLayoutManager(requireContext())
+                    val dataAdapter = ListUserAdapter(it.data)
+                    binding.rvUser.adapter = dataAdapter
+
                 }
                 is Result.Loading -> {
-                    binding.rvUser.veil()
-                    binding.rvUser.shimmerEnable = true
-                    Log.d("Home", "Loading")
+                    startShimmer()
                 }
                 is Result.Error -> {
-                    binding.rvUser.unVeil()
-                    binding.rvUser.shimmerEnable = false
-                    Log.d("Home", "Error")
+                    Log.e("HomeFragment&OnViewCreated&getDefaultUser", it.error)
                 }
             }
         }
+    }
+
+    private fun stopShimmer() {
+        binding.loadingShimmer.visibility = View.GONE
+        binding.loadingShimmer.stopShimmer()
+        binding.rvUser.visibility = View.VISIBLE
+    }
+
+    private fun startShimmer() {
+        binding.rvUser.visibility = View.GONE
+        binding.loadingShimmer.visibility = View.VISIBLE
+        binding.loadingShimmer.startShimmer()
     }
 
     override fun onDestroyView() {

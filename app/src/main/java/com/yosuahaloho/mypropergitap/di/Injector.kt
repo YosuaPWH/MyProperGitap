@@ -5,7 +5,7 @@ import com.yosuahaloho.mypropergitap.repos.UserRepository
 import com.yosuahaloho.mypropergitap.repos.local.FavoriteUserDatabase
 import com.yosuahaloho.mypropergitap.repos.remote.ApiConfig
 
-object Injection {
+object Injector {
 
     fun provideUserRepository(context: Context): UserRepository {
         val apiService = ApiConfig.getInstance

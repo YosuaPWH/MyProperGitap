@@ -9,7 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="com.yosuahaloho.mypropergitap.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_detailUserActivity"
+            app:destination="@id/detailUserActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_favorite"
@@ -22,5 +26,16 @@
         android:name="com.yosuahaloho.mypropergitap.ui.profile.ProfileFragment"
         android:label="Profil"
         tools:layout="@layout/fragment_profile" />
+
+    <activity
+        android:id="@+id/detailUserActivity"
+        android:name="com.yosuahaloho.mypropergitap.ui.detailuser.DetailUserActivity"
+        android:label="activity_detail_user"
+        tools:layout="@layout/activity_detail_user">
+        <argument
+            android:name="username"
+            app:argType="string"
+            android:defaultValue="YosuaPWH" />
+    </activity>
 
 </navigation>
