@@ -13,7 +13,6 @@ class HomeViewModel(private val userRepository: UserRepository) : ViewModel() {
     }
     val text: LiveData<String> = _text
 
-
     fun getDefaultUser() = userRepository.getDefaultUser().asLiveData()
     fun searchUser(query: String) = userRepository.getSearchUser(query).asLiveData()
 }

@@ -38,4 +38,15 @@
             android:defaultValue="YosuaPWH" />
     </activity>
 
+    <fragment
+        android:id="@+id/followFragment"
+        android:name="com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragment"
+        android:label="FollowFragment"
+        tools:layout="@layout/fragment_follow">
+
+        <action
+            android:id="@+id/action_followFragment_to_detailUserActivity"
+            app:destination="@id/detailUserActivity" />
+    </fragment>
+
 </navigation>

@@ -2,17 +2,23 @@ package com.yosuahaloho.mypropergitap.ui.detailuser
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
+import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
+import com.google.android.material.tabs.TabLayoutMediator
 import com.yosuahaloho.mypropergitap.databinding.ActivityDetailUserBinding
+import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragment
+import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.repositories.RepositoriesUser
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import com.yosuahaloho.mypropergitap.utils.Result
+import timber.log.Timber
 
 class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailUserBinding
+    private var username: String? = null
 
     private val detailUserFactory by lazy { ViewModelFactory.getInstance(this) }
     private val detailUserViewModel: DetailUserViewModel by viewModels { detailUserFactory }
@@ -23,15 +29,20 @@ class DetailUserActivity : AppCompatActivity() {
         setContentView(binding.root)
         startShimmer()
 
-        val username = intent.extras?.let { DetailUserActivityArgs.fromBundle(it).username }
+        username = intent.extras?.let { DetailUserActivityArgs.fromBundle(it).username }
+        getDetailUser(username.toString())
+        Timber.d(username.toString())
 
-        Log.d("dawdaw", username.toString())
-        detailUserViewModel.getDetailUser(username.toString()).observe(this) {
+        setTabViewPager()
+    }
+
+    private fun getDetailUser(username: String) {
+        detailUserViewModel.getDetailUser(username).observe(this) {
             when (it) {
                 is Result.Success -> {
                     stopShimmer()
                     binding.detailUsername.text = username
-                    Log.d("DetailActivity", it.data.toString())
+                    Timber.d(it.data.toString())
                     Glide
                         .with(this)
                         .load(it.data.avatar_url)
@@ -47,9 +58,45 @@ class DetailUserActivity : AppCompatActivity() {
                     startShimmer()
                 }
                 is Result.Error -> {
-                    Log.e("DetailActivity&getDetailUser", it.error)
+                    Timber.e(it.error)
                 }
             }
+        }
+    }
+
+    private fun setTabViewPager() {
+        binding.detailViewPager.adapter = fragmentStateAdapter
+
+        TabLayoutMediator(binding.tabsLayout, binding.detailViewPager) { tab, position ->
+            tab.text = TITLE_PAGER[position]
+        }.attach()
+    }
+
+    private val fragmentStateAdapter = object : FragmentStateAdapter(this) {
+        override fun getItemCount(): Int {
+            return 3
+        }
+
+        override fun createFragment(position: Int): Fragment {
+            var fragment: Fragment? = null
+            when (position) {
+                0 -> {
+                    fragment = FollowFragment()
+                    fragment.arguments = Bundle().apply {
+                        putString(FollowFragment.DETAIL_USERNAME, username)
+                        putInt(FollowFragment.SECTION_NUMBER_PAGER, position)
+                    }
+                }
+                1 -> {
+                    fragment = FollowFragment()
+                    fragment.arguments = Bundle().apply {
+                        putString(FollowFragment.DETAIL_USERNAME, username)
+                        putInt(FollowFragment.SECTION_NUMBER_PAGER, position)
+                    }
+                }
+                2 -> fragment = RepositoriesUser()
+            }
+            return fragment as Fragment
         }
     }
 
@@ -63,5 +110,13 @@ class DetailUserActivity : AppCompatActivity() {
         binding.loadingShimmer.visibility = View.GONE
         binding.loadingShimmer.stopShimmer()
         binding.layoutDetail.visibility = View.VISIBLE
+    }
+
+    companion object {
+        private val TITLE_PAGER = arrayOf(
+            "Followers",
+            "Following",
+            "Repositories"
+        )
     }
 }

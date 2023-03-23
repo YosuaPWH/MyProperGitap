@@ -26,16 +26,16 @@ interface ApiService {
     ): DetailUser
 
     @GET("users/{username}/followers")
-    fun getFollowers(
-        @Path("username") username: String,
-        @Query("page") page: Int,
-        @Query("per_page") limitNumberUser: Int
-    ): Call<List<User>>
+    suspend fun getFollowers(
+        @Path("username") username: String
+//        @Query("page") page: Int,
+//        @Query("per_page") limitNumberUser: Int
+    ): List<User>
 
     @GET("users/{username}/following")
-    fun getFollowing(
-        @Path("username") username: String,
-        @Query("page") page: Int,
-        @Query("per_page") limitNumberUser: Int
-    )
+    suspend fun getFollowing(
+        @Path("username") username: String
+//        @Query("page") page: Int,
+//        @Query("per_page") limitNumberUser: Int
+    ): List<User>
 }

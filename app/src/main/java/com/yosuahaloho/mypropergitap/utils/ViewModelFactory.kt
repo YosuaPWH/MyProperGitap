@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.yosuahaloho.mypropergitap.di.Injector
 import com.yosuahaloho.mypropergitap.repos.UserRepository
 import com.yosuahaloho.mypropergitap.ui.detailuser.DetailUserViewModel
+import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowViewModel
 import com.yosuahaloho.mypropergitap.ui.favorite.FavoriteViewModel
 import com.yosuahaloho.mypropergitap.ui.home.HomeViewModel
 import com.yosuahaloho.mypropergitap.ui.profile.ProfileViewModel
@@ -18,6 +19,7 @@ class ViewModelFactory private constructor(private val userRepository: UserRepos
         FavoriteViewModel::class.java -> FavoriteViewModel(userRepository)
         ProfileViewModel::class.java -> ProfileViewModel(userRepository)
         DetailUserViewModel::class.java -> DetailUserViewModel(userRepository)
+        FollowViewModel::class.java -> FollowViewModel(userRepository)
         else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
     } as T
 

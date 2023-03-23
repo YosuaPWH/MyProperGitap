@@ -1,7 +1,6 @@
 package com.yosuahaloho.mypropergitap.ui.home
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,13 +14,14 @@ import com.yosuahaloho.mypropergitap.databinding.FragmentHomeBinding
 import com.yosuahaloho.mypropergitap.repos.model.User
 import com.yosuahaloho.mypropergitap.utils.ListUserAdapter
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
+import timber.log.Timber
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    private val factory by lazy { ViewModelFactory.getInstance(requireActivity()) }
+    private val factory by lazy { ViewModelFactory.getInstance(requireContext()) }
     private val homeViewModel: HomeViewModel by viewModels { factory }
 
     override fun onCreateView(
@@ -30,7 +30,7 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
-        binding.rvUser.adapter = ListUserAdapter(emptyList())
+        binding.rvUser.adapter = ListUserAdapter(emptyList(), true)
         startShimmer()
         return binding.root
     }
@@ -38,61 +38,41 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getDefaultUser()
+        homeViewModel.getDefaultUser().observeData("getDefaultUser")
         setSearchView()
     }
 
     private fun setSearchView() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                homeViewModel.searchUser(query.toString()).observeData()
+                homeViewModel.searchUser(query.toString()).observeData("searchUser")
                 binding.searchView.clearFocus()
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                Log.i("Search", newText.toString())
+                Timber.i(newText.toString())
                 return true
             }
         })
     }
 
-    private fun LiveData<Result<List<User>>>.observeData() {
+    private fun LiveData<Result<List<User>>>.observeData(functionName: String) {
         this.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
                     stopShimmer()
-                    Log.d(this.toString(), it.data.toString())
+                    Timber.d("$functionName -> ${it.data}")
+                    Timber.d("$functionName size data -> ${it.data.size}")
                     binding.rvUser.layoutManager = LinearLayoutManager(requireContext())
-                    val dataAdapter = ListUserAdapter(it.data)
+                    val dataAdapter = ListUserAdapter(it.data, true)
                     binding.rvUser.adapter = dataAdapter
                 }
                 is Result.Loading -> {
                     startShimmer()
                 }
                 is Result.Error -> {
-                    Log.e(this.toString(), it.error)
-                }
-            }
-        }
-    }
-
-    private fun getDefaultUser() {
-        homeViewModel.getDefaultUser().observe(viewLifecycleOwner) {
-            when (it) {
-                is Result.Success -> {
-                    stopShimmer()
-                    Log.d("Home", it.data.toString())
-                    binding.rvUser.layoutManager = LinearLayoutManager(requireContext())
-                    val dataAdapter = ListUserAdapter(it.data)
-                    binding.rvUser.adapter = dataAdapter
-
-                }
-                is Result.Loading -> {
-                    startShimmer()
-                }
-                is Result.Error -> {
-                    Log.e("HomeFragment&OnViewCreated&getDefaultUser", it.error)
+                    Timber.e("$functionName -> " + it.error)
                 }
             }
         }

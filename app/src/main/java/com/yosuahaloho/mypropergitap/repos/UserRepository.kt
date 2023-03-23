@@ -38,6 +38,26 @@ class UserRepository private constructor(private val apiService: ApiService, pri
         }
     }
 
+    fun getFollowers(username: String) = flow {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getFollowers(username)
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+
+    fun getFollowing(username: String) = flow {
+        emit(Result.Loading)
+        try {
+            val response = apiService.getFollowing(username)
+            emit(Result.Success(response))
+        } catch (e: Exception) {
+            emit(Result.Error(e.message.toString()))
+        }
+    }
+
 
     companion object {
         private var instance: UserRepository? = null

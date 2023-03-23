@@ -1,19 +1,16 @@
 package com.yosuahaloho.mypropergitap.utils
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.yosuahaloho.mypropergitap.databinding.UserItemListBinding
 import com.yosuahaloho.mypropergitap.repos.model.User
-import com.yosuahaloho.mypropergitap.ui.detailuser.DetailUserActivity
-import com.yosuahaloho.mypropergitap.ui.detailuser.DetailUserActivityArgs
+import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragmentDirections
 import com.yosuahaloho.mypropergitap.ui.home.HomeFragmentDirections
 
-class ListUserAdapter(private val listUser: List<User>) : RecyclerView.Adapter<ListUserAdapter.ListUserViewHolder>() {
+class ListUserAdapter(private val listUser: List<User>, private val isHomeFragments: Boolean) : RecyclerView.Adapter<ListUserAdapter.ListUserViewHolder>() {
 
     inner class ListUserViewHolder(val binding: UserItemListBinding) : RecyclerView.ViewHolder(binding.root)
 
@@ -35,9 +32,17 @@ class ListUserAdapter(private val listUser: List<User>) : RecyclerView.Adapter<L
 
 
             root.setOnClickListener {
-                val toDetailUserActivity = HomeFragmentDirections.actionNavigationHomeToDetailUserActivity()
-                toDetailUserActivity.username = data.username
-                it.findNavController().navigate(toDetailUserActivity)
+
+                if (isHomeFragments) {
+                    val toDetailUserActivity = HomeFragmentDirections.actionNavigationHomeToDetailUserActivity()
+                    toDetailUserActivity.username = data.username
+                    it.findNavController().navigate(toDetailUserActivity)
+                } else {
+                    val dawdaw = FollowFragmentDirections.actionFollowFragmentToDetailUserActivity()
+                    dawdaw.username = data.username
+                    it.findNavController().navigate(dawdaw)
+                }
+
             }
         }
     }
