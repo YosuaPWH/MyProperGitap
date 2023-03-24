@@ -13,19 +13,17 @@ abstract class FavoriteUserDatabase : RoomDatabase() {
     abstract fun favoriteUserDao(): FavoriteUserDao
 
     companion object {
+        @Volatile
         private var INSTANCE: FavoriteUserDatabase? = null
 
-        fun getDatabase(context: Context): FavoriteUserDatabase {
-            if (INSTANCE == null) {
-                synchronized(FavoriteUserDatabase::class.java) {
-                    INSTANCE = Room.databaseBuilder(
-                        context.applicationContext,
-                        FavoriteUserDatabase::class.java,
-                        "db_favorite"
-                    ).build()
-                }
+        fun getDatabase(context: Context): FavoriteUserDatabase =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: Room.databaseBuilder(
+                    context.applicationContext,
+                    FavoriteUserDatabase::class.java,
+                    "db_favorite"
+                ).build()
             }
-            return INSTANCE as FavoriteUserDatabase
-        }
+
     }
 }

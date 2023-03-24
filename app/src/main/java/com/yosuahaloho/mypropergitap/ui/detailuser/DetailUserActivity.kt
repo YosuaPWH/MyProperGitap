@@ -8,7 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
+import com.yosuahaloho.mypropergitap.R
 import com.yosuahaloho.mypropergitap.databinding.ActivityDetailUserBinding
+import com.yosuahaloho.mypropergitap.repos.local.entity.FavoriteUser
 import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragment
 import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.repositories.RepositoriesUser
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
@@ -20,8 +22,11 @@ class DetailUserActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDetailUserBinding
     private var username: String? = null
 
-    private val detailUserFactory by lazy { ViewModelFactory.getInstance(this) }
-    private val detailUserViewModel: DetailUserViewModel by viewModels { detailUserFactory }
+    private val detailUserViewModel by viewModels<DetailUserViewModel> {
+        ViewModelFactory.getInstance(
+            application
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,6 +58,8 @@ class DetailUserActivity : AppCompatActivity() {
                     binding.detailFollowersSize.text = it.data.followers.toString()
                     binding.detailFollowingSize.text = it.data.following.toString()
                     binding.detailPublicRepos.text = it.data.public_repos.toString()
+
+                    setFavorite(username, it.data.avatar_url)
                 }
                 is Result.Loading -> {
                     startShimmer()
@@ -97,6 +104,31 @@ class DetailUserActivity : AppCompatActivity() {
                 2 -> fragment = RepositoriesUser()
             }
             return fragment as Fragment
+        }
+    }
+
+    private fun setFavorite(username: String, avatar_url: String) {
+        detailUserViewModel.isFavoriteUser(username)
+
+        var btnFavorite = false
+        detailUserViewModel.isFavorite.observe(this) {
+            btnFavorite = it
+            if (btnFavorite) {
+                binding.fabFavorite.setImageResource(R.drawable.ic_filled_favorite)
+            } else {
+                binding.fabFavorite.setImageResource(R.drawable.ic_outlined_favorite)
+            }
+        }
+        
+        binding.fabFavorite.setOnClickListener {
+            btnFavorite = !btnFavorite
+            if (btnFavorite) {
+                detailUserViewModel.addToFavorite(user = FavoriteUser(username, avatar_url))
+                binding.fabFavorite.setImageResource(R.drawable.ic_filled_favorite)
+            } else {
+                detailUserViewModel.removeFromFavorite(user = FavoriteUser(username, avatar_url))
+                binding.fabFavorite.setImageResource(R.drawable.ic_outlined_favorite)
+            }
         }
     }
 

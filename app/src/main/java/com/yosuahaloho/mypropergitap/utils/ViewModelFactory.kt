@@ -11,7 +11,8 @@ import com.yosuahaloho.mypropergitap.ui.favorite.FavoriteViewModel
 import com.yosuahaloho.mypropergitap.ui.home.HomeViewModel
 import com.yosuahaloho.mypropergitap.ui.profile.ProfileViewModel
 
-class ViewModelFactory private constructor(private val userRepository: UserRepository) : ViewModelProvider.NewInstanceFactory() {
+class ViewModelFactory private constructor(private val userRepository: UserRepository) :
+    ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when (modelClass) {

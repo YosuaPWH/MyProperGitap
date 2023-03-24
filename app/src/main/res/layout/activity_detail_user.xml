@@ -161,11 +161,25 @@
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/loading_shimmer"
         android:layout_width="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_height="wrap_content">
 
         <include layout="@layout/activity_detail_user_shimmer_placeholder" />
 
     </com.facebook.shimmer.ShimmerFrameLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_favorite"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_centerInParent="true"
+        app:fabCustomSize="56dp"
+        app:tint="@android:color/holo_red_light"
+        android:elevation="10dp"
+        android:src="@drawable/ic_outlined_favorite"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_margin="30dp"
+        android:contentDescription="@string/button_favorite" />
 
 </RelativeLayout>

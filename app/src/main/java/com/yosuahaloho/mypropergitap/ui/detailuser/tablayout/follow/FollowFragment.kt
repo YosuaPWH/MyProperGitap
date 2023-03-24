@@ -19,9 +19,13 @@ class FollowFragment : Fragment() {
 
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding!!
+    private lateinit var followUserAdapter: ListUserAdapter
 
-    private val factory by lazy { ViewModelFactory.getInstance(requireContext()) }
-    private val followViewModel: FollowViewModel by viewModels { factory }
+    private val followViewModel by viewModels<FollowViewModel> {
+        ViewModelFactory.getInstance(
+            requireContext()
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -29,8 +33,11 @@ class FollowFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFollowBinding.inflate(inflater, container, false)
+        startShimmer()
+
         binding.rvUserFollow.layoutManager = LinearLayoutManager(requireContext())
-        binding.rvUserFollow.adapter = ListUserAdapter(emptyList(), false)
+        followUserAdapter = ListUserAdapter(isHomeFragments = false, isFavoriteFragments = false)
+        binding.rvUserFollow.adapter = followUserAdapter
 
         val username = arguments?.getString(DETAIL_USERNAME)
         val sectionNumberPager = arguments?.getInt(SECTION_NUMBER_PAGER)
@@ -47,8 +54,6 @@ class FollowFragment : Fragment() {
             }
             Timber.d("$sectionNumberPager")
         }
-
-
         return binding.root
     }
 
@@ -56,13 +61,15 @@ class FollowFragment : Fragment() {
         this.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
+                    stopShimmer()
                     Timber.d("$functionName -> ${it.data}")
                     Timber.d("$functionName size data ->: ${it.data.size}")
-                    val dataFollowAdapter = ListUserAdapter(it.data, false)
-                    binding.rvUserFollow.adapter = dataFollowAdapter
-                    Timber.d("dapat sini")
+
+                    followUserAdapter.submitList(it.data)
+                    binding.rvUserFollow.adapter = followUserAdapter
                 }
                 is Result.Loading -> {
+                    startShimmer()
                     Timber.d("Loading Follow")
                 }
                 is Result.Error -> {
@@ -70,6 +77,18 @@ class FollowFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun stopShimmer() {
+        binding.loadingShimmer.visibility = View.GONE
+        binding.loadingShimmer.stopShimmer()
+        binding.rvUserFollow.visibility = View.VISIBLE
+    }
+
+    private fun startShimmer() {
+        binding.rvUserFollow.visibility = View.GONE
+        binding.loadingShimmer.visibility = View.VISIBLE
+        binding.loadingShimmer.startShimmer()
     }
 
     companion object {

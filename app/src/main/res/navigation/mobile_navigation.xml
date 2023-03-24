@@ -19,7 +19,11 @@
         android:id="@+id/navigation_favorite"
         android:name="com.yosuahaloho.mypropergitap.ui.favorite.FavoriteFragment"
         android:label="Favorite"
-        tools:layout="@layout/fragment_favorite" />
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/action_navigation_favorite_to_detailUserActivity"
+            app:destination="@id/detailUserActivity" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_profil"
@@ -37,16 +41,5 @@
             app:argType="string"
             android:defaultValue="YosuaPWH" />
     </activity>
-
-    <fragment
-        android:id="@+id/followFragment"
-        android:name="com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragment"
-        android:label="FollowFragment"
-        tools:layout="@layout/fragment_follow">
-
-        <action
-            android:id="@+id/action_followFragment_to_detailUserActivity"
-            app:destination="@id/detailUserActivity" />
-    </fragment>
 
 </navigation>

@@ -13,4 +13,5 @@ object Injector {
         val dao = database.favoriteUserDao()
         return UserRepository.getInstance(apiService, dao)
     }
+
 }
