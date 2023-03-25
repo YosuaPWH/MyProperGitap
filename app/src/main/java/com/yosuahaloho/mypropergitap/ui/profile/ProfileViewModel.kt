@@ -1,14 +1,19 @@
 package com.yosuahaloho.mypropergitap.ui.profile
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.yosuahaloho.mypropergitap.repos.UserRepository
+import com.yosuahaloho.mypropergitap.utils.StoredPreferences
+import kotlinx.coroutines.launch
 
-class ProfileViewModel(userRepository: UserRepository) : ViewModel() {
-    // TODO: Implement the ViewModel
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is Profile Fragment"
+class ProfileViewModel(private val pref: StoredPreferences) : ViewModel() {
+
+    fun getThemeSettings(): LiveData<Boolean> {
+        return pref.getThemeSetting().asLiveData()
     }
-    val text: LiveData<String> = _text
+
+    fun saveThemeSetting(isDarkModeActive: Boolean) {
+        viewModelScope.launch {
+            pref.saveThemeSetting(isDarkModeActive)
+        }
+    }
 }

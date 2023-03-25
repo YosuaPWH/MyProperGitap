@@ -11,14 +11,14 @@ import com.yosuahaloho.mypropergitap.ui.favorite.FavoriteViewModel
 import com.yosuahaloho.mypropergitap.ui.home.HomeViewModel
 import com.yosuahaloho.mypropergitap.ui.profile.ProfileViewModel
 
-class ViewModelFactory private constructor(private val userRepository: UserRepository) :
+class ViewModelFactory private constructor(private val userRepository: UserRepository, private val storedPreferences: StoredPreferences) :
     ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when (modelClass) {
         HomeViewModel::class.java -> HomeViewModel(userRepository)
         FavoriteViewModel::class.java -> FavoriteViewModel(userRepository)
-        ProfileViewModel::class.java -> ProfileViewModel(userRepository)
+        ProfileViewModel::class.java -> ProfileViewModel(storedPreferences)
         DetailUserViewModel::class.java -> DetailUserViewModel(userRepository)
         FollowViewModel::class.java -> FollowViewModel(userRepository)
         else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
@@ -29,7 +29,10 @@ class ViewModelFactory private constructor(private val userRepository: UserRepos
         private var instance: ViewModelFactory? = null
         fun getInstance(context: Context): ViewModelFactory =
             instance ?: synchronized(this) {
-                instance ?: ViewModelFactory(Injector.provideUserRepository(context))
+                instance ?: ViewModelFactory(
+                    Injector.provideUserRepository(context),
+                    Injector.provideStoredPreferences(context)
+                )
             }.also {
                 instance = it
             }

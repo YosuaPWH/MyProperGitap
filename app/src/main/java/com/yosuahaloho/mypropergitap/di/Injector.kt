@@ -6,6 +6,7 @@ import com.yosuahaloho.mypropergitap.repos.local.db.FavoriteUserDatabase
 import com.yosuahaloho.mypropergitap.repos.local.LocalDataSource
 import com.yosuahaloho.mypropergitap.repos.remote.RemoteDataSource
 import com.yosuahaloho.mypropergitap.repos.remote.network.ApiConfig
+import com.yosuahaloho.mypropergitap.utils.StoredPreferences
 
 object Injector {
 
@@ -17,6 +18,10 @@ object Injector {
         val dao = database.favoriteUserDao()
         val local = LocalDataSource(dao)
         return UserRepository.getInstance(remote, local)
+    }
+
+    fun provideStoredPreferences(context: Context): StoredPreferences {
+        return StoredPreferences.getInstance(context)
     }
 
 }

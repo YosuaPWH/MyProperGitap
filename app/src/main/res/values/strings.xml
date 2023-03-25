@@ -12,4 +12,5 @@
     <string name="no_favorite">No favorite users have been added yet. Please add some user to favorite.</string>
     <string name="no_follower">Sorry, this user does not currently have any followers.</string>
     <string name="no_following">Sorry, there are currently no accounts being followed by this user</string>
+    <string name="dark_mode">Dark Mode</string>
 </resources>

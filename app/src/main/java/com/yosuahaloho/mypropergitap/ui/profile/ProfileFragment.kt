@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.viewModels
 import com.yosuahaloho.mypropergitap.databinding.FragmentProfileBinding
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
@@ -26,9 +27,20 @@ class ProfileFragment : Fragment() {
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
 
-
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.switchTheme.setOnCheckedChangeListener { _, isChecked ->
+            profileViewModel.saveThemeSetting(isChecked)
+        }
+
+        profileViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive ->
+            binding.switchTheme.isChecked = isDarkModeActive
+        }
+
     }
 
 }
