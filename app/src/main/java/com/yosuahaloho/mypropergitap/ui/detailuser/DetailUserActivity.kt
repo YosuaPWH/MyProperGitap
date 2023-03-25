@@ -15,6 +15,7 @@ import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragme
 import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.repositories.RepositoriesUser
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import com.yosuahaloho.mypropergitap.utils.Result
+import com.yosuahaloho.mypropergitap.utils.Util
 import timber.log.Timber
 
 class DetailUserActivity : AppCompatActivity() {
@@ -32,20 +33,22 @@ class DetailUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        startShimmer()
+        Util.startShimmer(binding.layoutDetail, binding.loadingShimmer)
 
         username = intent.extras?.let { DetailUserActivityArgs.fromBundle(it).username }
+
         getDetailUser(username.toString())
         Timber.d(username.toString())
-
         setTabViewPager()
+
+
     }
 
     private fun getDetailUser(username: String) {
         detailUserViewModel.getDetailUser(username).observe(this) {
             when (it) {
                 is Result.Success -> {
-                    stopShimmer()
+                    Util.stopShimmer(binding.layoutDetail, binding.loadingShimmer)
                     binding.detailUsername.text = username
                     Timber.d(it.data.toString())
                     Glide
@@ -62,7 +65,7 @@ class DetailUserActivity : AppCompatActivity() {
                     setFavorite(username, it.data.avatar_url)
                 }
                 is Result.Loading -> {
-                    startShimmer()
+                    Util.startShimmer(binding.layoutDetail, binding.loadingShimmer)
                 }
                 is Result.Error -> {
                     Timber.e(it.error)
@@ -121,8 +124,7 @@ class DetailUserActivity : AppCompatActivity() {
         }
         
         binding.fabFavorite.setOnClickListener {
-            btnFavorite = !btnFavorite
-            if (btnFavorite) {
+            if (!btnFavorite) {
                 detailUserViewModel.addToFavorite(user = FavoriteUser(username, avatar_url))
                 binding.fabFavorite.setImageResource(R.drawable.ic_filled_favorite)
             } else {
@@ -130,18 +132,6 @@ class DetailUserActivity : AppCompatActivity() {
                 binding.fabFavorite.setImageResource(R.drawable.ic_outlined_favorite)
             }
         }
-    }
-
-    private fun startShimmer() {
-        binding.layoutDetail.visibility = View.GONE
-        binding.loadingShimmer.visibility = View.VISIBLE
-        binding.loadingShimmer.startShimmer()
-    }
-
-    private fun stopShimmer() {
-        binding.loadingShimmer.visibility = View.GONE
-        binding.loadingShimmer.stopShimmer()
-        binding.layoutDetail.visibility = View.VISIBLE
     }
 
     companion object {

@@ -1,4 +1,4 @@
-package com.yosuahaloho.mypropergitap
+package com.yosuahaloho.mypropergitap.utils
 
 import android.app.Application
 import timber.log.Timber

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.yosuahaloho.mypropergitap.databinding.FragmentFollowBinding
 import com.yosuahaloho.mypropergitap.repos.model.User
 import com.yosuahaloho.mypropergitap.utils.ListUserAdapter
+import com.yosuahaloho.mypropergitap.utils.Util
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import timber.log.Timber
 
@@ -33,7 +34,7 @@ class FollowFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFollowBinding.inflate(inflater, container, false)
-        startShimmer()
+        Util.startShimmer(binding.rvUserFollow, binding.loadingShimmer)
 
         binding.rvUserFollow.layoutManager = LinearLayoutManager(requireContext())
         followUserAdapter = ListUserAdapter(isHomeFragments = false, isFavoriteFragments = false)
@@ -61,7 +62,7 @@ class FollowFragment : Fragment() {
         this.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
-                    stopShimmer()
+                    Util.stopShimmer(binding.rvUserFollow, binding.loadingShimmer)
                     Timber.d("$functionName -> ${it.data}")
                     Timber.d("$functionName size data ->: ${it.data.size}")
 
@@ -69,7 +70,7 @@ class FollowFragment : Fragment() {
                     binding.rvUserFollow.adapter = followUserAdapter
                 }
                 is Result.Loading -> {
-                    startShimmer()
+                    Util.startShimmer(binding.rvUserFollow, binding.loadingShimmer)
                     Timber.d("Loading Follow")
                 }
                 is Result.Error -> {
@@ -77,18 +78,6 @@ class FollowFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun stopShimmer() {
-        binding.loadingShimmer.visibility = View.GONE
-        binding.loadingShimmer.stopShimmer()
-        binding.rvUserFollow.visibility = View.VISIBLE
-    }
-
-    private fun startShimmer() {
-        binding.rvUserFollow.visibility = View.GONE
-        binding.loadingShimmer.visibility = View.VISIBLE
-        binding.loadingShimmer.startShimmer()
     }
 
     companion object {

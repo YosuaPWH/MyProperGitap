@@ -1,4 +1,4 @@
-package com.yosuahaloho.mypropergitap.repos.remote
+package com.yosuahaloho.mypropergitap.repos.remote.network
 
 import com.yosuahaloho.mypropergitap.repos.model.DetailUser
 import com.yosuahaloho.mypropergitap.repos.model.ResponseSearch

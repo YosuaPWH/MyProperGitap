@@ -52,14 +52,14 @@ class HomeFragment : Fragment() {
 
     private fun setSearchView() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                homeViewModel.searchUser(query.toString()).observeData("searchUser")
+            override fun onQueryTextSubmit(username: String): Boolean {
+                homeViewModel.searchUser(username).observeData("searchUser")
                 binding.searchView.clearFocus()
                 return true
             }
 
-            override fun onQueryTextChange(newText: String?): Boolean {
-                Timber.i(newText.toString())
+            override fun onQueryTextChange(newText: String): Boolean {
+                Timber.i(newText)
                 return true
             }
         })

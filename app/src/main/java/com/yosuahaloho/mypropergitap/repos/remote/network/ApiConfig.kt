@@ -1,4 +1,4 @@
-package com.yosuahaloho.mypropergitap.repos.remote
+package com.yosuahaloho.mypropergitap.repos.remote.network
 
 import com.yosuahaloho.mypropergitap.BuildConfig
 import okhttp3.Interceptor
@@ -16,7 +16,7 @@ object ApiConfig {
     val getInstance: ApiService by lazy {
 
         val loggingInterceptor = if (BuildConfig.DEBUG) {
-            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS)
         } else {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
         }
@@ -38,7 +38,7 @@ object ApiConfig {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-//            .client(client)
+            .client(client)
             .build()
 
         retrofit.create(ApiService::class.java)

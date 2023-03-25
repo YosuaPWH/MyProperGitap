@@ -1,17 +1,17 @@
 package com.yosuahaloho.mypropergitap.repos
 
-import com.yosuahaloho.mypropergitap.repos.local.dao.FavoriteUserDao
+import com.yosuahaloho.mypropergitap.repos.local.LocalDataSource
 import com.yosuahaloho.mypropergitap.repos.local.entity.FavoriteUser
-import com.yosuahaloho.mypropergitap.repos.remote.ApiService
-import kotlinx.coroutines.flow.flow
+import com.yosuahaloho.mypropergitap.repos.remote.RemoteDataSource
 import com.yosuahaloho.mypropergitap.utils.Result
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
 
 class UserRepository private constructor(
-    private val apiService: ApiService,
-    private val favoriteUserDao: FavoriteUserDao
+    private val remote: RemoteDataSource,
+    private val local: LocalDataSource
 ) {
 
     /**
@@ -20,7 +20,7 @@ class UserRepository private constructor(
     fun getDefaultUser() = flow {
         emit(Result.Loading)
         try {
-            val response = apiService.getDefaultUsers()
+            val response = remote.getDefaultUser()
             emit(Result.Success(response))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
@@ -33,7 +33,7 @@ class UserRepository private constructor(
     fun getDetailUser(username: String) = flow {
         emit(Result.Loading)
         try {
-            val response = apiService.getDetailUser(username)
+            val response = remote.getDetailUser(username)
             emit(Result.Success(response))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
@@ -43,10 +43,10 @@ class UserRepository private constructor(
     /**
      * This function will return user search results based on the query entered
      */
-    fun getSearchUser(query: String) = flow {
+    fun getSearchUser(username: String) = flow {
         emit(Result.Loading)
         try {
-            val response = apiService.searchUser(query)
+            val response = remote.getSearchUser(username)
             emit(Result.Success(response.items))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
@@ -59,7 +59,7 @@ class UserRepository private constructor(
     fun getFollowers(username: String) = flow {
         emit(Result.Loading)
         try {
-            val response = apiService.getFollowers(username)
+            val response = remote.getFollowers(username)
             emit(Result.Success(response))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
@@ -72,7 +72,7 @@ class UserRepository private constructor(
     fun getFollowing(username: String) = flow {
         emit(Result.Loading)
         try {
-            val response = apiService.getFollowing(username)
+            val response = remote.getFollowing(username)
             emit(Result.Success(response))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
@@ -81,34 +81,33 @@ class UserRepository private constructor(
 
     suspend fun addToFavorite(user: FavoriteUser) {
         try {
-            favoriteUserDao.insert(user)
+            local.addToFavorite(user)
+        } catch (e: Exception) {
+            Timber.e(e.message)
+        }
+    }
+
+    suspend fun removeFromFavorite(user: FavoriteUser) {
+        try {
+            local.removeFromFavorite(user)
         } catch (e: Exception) {
             Timber.e(e.message)
         }
     }
 
     suspend fun isFavoriteUser(username: String): Boolean {
-        try {
-            return favoriteUserDao.isFavoriteUser(username)
+        return try {
+            local.isFavoriteUser(username)
         } catch (e: Exception) {
             Timber.e(e.message)
-        }
-
-        return false
-    }
-
-    suspend fun removeFromFavorite(user: FavoriteUser) {
-        try {
-            favoriteUserDao.delete(user)
-        } catch (e: Exception) {
-            Timber.e(e.message)
+            false
         }
     }
 
     fun getFavoriteUser() = flow {
         emit(Result.Loading)
         try {
-            val res = favoriteUserDao.getAllFavoriteUser()
+            val res = local.getFavoriteUser()
             emit(Result.Success(res))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
@@ -120,11 +119,11 @@ class UserRepository private constructor(
         private var instance: UserRepository? = null
 
         fun getInstance(
-            apiService: ApiService,
-            favoriteUserDao: FavoriteUserDao
+            remote: RemoteDataSource,
+            local: LocalDataSource
         ): UserRepository =
             instance ?: synchronized(this) {
-                instance ?: UserRepository(apiService, favoriteUserDao)
+                instance ?: UserRepository(remote, local)
             }.also {
                 instance = it
             }

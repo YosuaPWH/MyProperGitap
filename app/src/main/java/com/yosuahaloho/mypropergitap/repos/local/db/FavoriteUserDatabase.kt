@@ -1,4 +1,4 @@
-package com.yosuahaloho.mypropergitap.repos.local
+package com.yosuahaloho.mypropergitap.repos.local.db
 
 import android.content.Context
 import androidx.room.Database
@@ -13,13 +13,13 @@ abstract class FavoriteUserDatabase : RoomDatabase() {
     abstract fun favoriteUserDao(): FavoriteUserDao
 
     companion object {
-        @Volatile
+
         private var INSTANCE: FavoriteUserDatabase? = null
 
         fun getDatabase(context: Context): FavoriteUserDatabase =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: Room.databaseBuilder(
-                    context.applicationContext,
+            INSTANCE ?: synchronized(this) {  // Blok synchronized digunakan untuk memastikan bahwa
+                INSTANCE ?: Room.databaseBuilder( // hanya satu thread yang dapat mengakses blok kode
+                    context.applicationContext, // tersebut pada satu waktu.
                     FavoriteUserDatabase::class.java,
                     "db_favorite"
                 ).build()

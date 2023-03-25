@@ -144,6 +144,7 @@
             android:contentDescription="@string/tablayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
+            app:tabGravity="fill"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/ll_data_fol"
             app:tabTextColor="@android:color/darker_gray" />
@@ -161,7 +162,7 @@
     <com.facebook.shimmer.ShimmerFrameLayout
         android:id="@+id/loading_shimmer"
         android:layout_width="match_parent"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_height="wrap_content">
 
         <include layout="@layout/activity_detail_user_shimmer_placeholder" />

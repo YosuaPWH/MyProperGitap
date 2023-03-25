@@ -16,6 +16,6 @@ interface FavoriteUserDao {
     suspend fun isFavoriteUser(username: String): Boolean
 
     @Query("SELECT * FROM favorite_user ORDER by username ASC")
-    fun getAllFavoriteUser(): List<FavoriteUser>
+    suspend fun getAllFavoriteUser(): List<FavoriteUser>
 
 }

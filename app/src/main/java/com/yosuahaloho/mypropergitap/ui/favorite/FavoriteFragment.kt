@@ -13,6 +13,7 @@ import com.yosuahaloho.mypropergitap.repos.local.entity.FavoriteUser
 import com.yosuahaloho.mypropergitap.repos.model.User
 import com.yosuahaloho.mypropergitap.utils.ListUserAdapter
 import com.yosuahaloho.mypropergitap.utils.Result
+import com.yosuahaloho.mypropergitap.utils.Util
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import timber.log.Timber
 
@@ -37,7 +38,7 @@ class FavoriteFragment : Fragment() {
         favoriteUserAdapter = ListUserAdapter(isHomeFragments = false, isFavoriteFragments = true)
         binding.rvUserFavorite.adapter = favoriteUserAdapter
 
-        startShimmer()
+        Util.startShimmer(binding.rvUserFavorite, binding.loadingShimmer)
         return binding.root
     }
 
@@ -51,7 +52,7 @@ class FavoriteFragment : Fragment() {
         this.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
-                    stopShimmer()
+                    Util.stopShimmer(binding.rvUserFavorite, binding.loadingShimmer)
                     Timber.d("$functionName -> ${it.data}")
                     Timber.d("$functionName size data ->: ${it.data.size}")
                     val items = arrayListOf<User>()
@@ -68,25 +69,13 @@ class FavoriteFragment : Fragment() {
                     binding.rvUserFavorite.adapter = favoriteUserAdapter
                 }
                 is Result.Loading -> {
-                    startShimmer()
+                    Util.startShimmer(binding.rvUserFavorite, binding.loadingShimmer)
                 }
                 is Result.Error -> {
                     Timber.e("$functionName -> " + it.error)
                 }
             }
         }
-    }
-
-    private fun stopShimmer() {
-        binding.loadingShimmer.visibility = View.GONE
-        binding.loadingShimmer.stopShimmer()
-        binding.rvUserFavorite.visibility = View.VISIBLE
-    }
-
-    private fun startShimmer() {
-        binding.rvUserFavorite.visibility = View.GONE
-        binding.loadingShimmer.visibility = View.VISIBLE
-        binding.loadingShimmer.startShimmer()
     }
 
     override fun onResume() {
