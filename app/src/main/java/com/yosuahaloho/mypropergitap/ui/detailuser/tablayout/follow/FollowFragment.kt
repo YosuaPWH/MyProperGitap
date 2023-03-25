@@ -9,6 +9,7 @@ import com.yosuahaloho.mypropergitap.utils.Result
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.yosuahaloho.mypropergitap.R
 import com.yosuahaloho.mypropergitap.databinding.FragmentFollowBinding
 import com.yosuahaloho.mypropergitap.repos.model.User
 import com.yosuahaloho.mypropergitap.utils.ListUserAdapter
@@ -66,8 +67,19 @@ class FollowFragment : Fragment() {
                     Timber.d("$functionName -> ${it.data}")
                     Timber.d("$functionName size data ->: ${it.data.size}")
 
-                    followUserAdapter.submitList(it.data)
-                    binding.rvUserFollow.adapter = followUserAdapter
+                    if (it.data.isNotEmpty()) {
+                        followUserAdapter.submitList(it.data)
+                        binding.rvUserFollow.adapter = followUserAdapter
+                    } else {
+                        Util.displayNoUser(
+                            viewToGone = binding.rvUserFollow,
+                            noUserView = binding.layoutNotFound,
+                            stringResourceFollowFragment = if (functionName == "getFollowers") {
+                                R.string.no_follower
+                            } else R.string.no_following,
+                            textNoUserTextViewHomeFragment = binding.txtNotFound,
+                        )
+                    }
                 }
                 is Result.Loading -> {
                     Util.startShimmer(binding.rvUserFollow, binding.loadingShimmer)

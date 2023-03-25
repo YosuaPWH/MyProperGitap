@@ -8,4 +8,8 @@
     <string name="repositories">Repositories</string>
     <string name="followers">Followers</string>
     <string name="button_favorite">Button Favorite</string>
+    <string name="not_found">Sorry, we couldn\'t find any users matching \'%1$s\'</string>
+    <string name="no_favorite">No favorite users have been added yet. Please add some user to favorite.</string>
+    <string name="no_follower">Sorry, this user does not currently have any followers.</string>
+    <string name="no_following">Sorry, there are currently no accounts being followed by this user</string>
 </resources>

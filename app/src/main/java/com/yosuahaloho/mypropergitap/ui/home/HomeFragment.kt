@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.LiveData
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.yosuahaloho.mypropergitap.R
 import com.yosuahaloho.mypropergitap.databinding.FragmentHomeBinding
 import com.yosuahaloho.mypropergitap.repos.model.User
 import com.yosuahaloho.mypropergitap.utils.ListUserAdapter
@@ -22,6 +23,7 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var listUserAdapter: ListUserAdapter
+    private var username: String? = null
 
     private val homeViewModel by viewModels<HomeViewModel> {
         ViewModelFactory.getInstance(
@@ -52,9 +54,10 @@ class HomeFragment : Fragment() {
 
     private fun setSearchView() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(username: String): Boolean {
-                homeViewModel.searchUser(username).observeData("searchUser")
-                binding.searchView.clearFocus()
+            override fun onQueryTextSubmit(usernameQ: String): Boolean {
+                username = usernameQ
+                homeViewModel.searchUser(usernameQ).observeData("searchUser")
+//                binding.searchView.clearFocus()
                 return true
             }
 
@@ -72,11 +75,21 @@ class HomeFragment : Fragment() {
                     Util.stopShimmer(binding.rvUser, binding.loadingShimmer)
                     Timber.d("$functionName -> ${it.data}")
                     Timber.d("$functionName size data -> ${it.data.size}")
-
-                    listUserAdapter.submitList(it.data)
-                    binding.rvUser.adapter = listUserAdapter
+                    if (it.data.isNotEmpty()) {
+                        listUserAdapter.submitList(it.data)
+                        binding.rvUser.adapter = listUserAdapter
+                    } else {
+                        Util.displayNoUser(
+                            viewToGone = binding.rvUser,
+                            noUserView = binding.layoutNotFound,
+                            textNoUserTextViewHomeFragment = binding.txtNotFound,
+                            stringResourceFollowFragment = R.string.not_found,
+                            username = username,
+                        )
+                    }
                 }
                 is Result.Loading -> {
+                    Util.unDisplayNoUser(binding.layoutNotFound)
                     Util.startShimmer(binding.rvUser, binding.loadingShimmer)
                 }
                 is Result.Error -> {
@@ -84,6 +97,16 @@ class HomeFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun displayUserNotFound(username: String) {
+        binding.txtNotFound.text = resources.getString(R.string.not_found, username.trim())
+        binding.rvUser.visibility = View.GONE
+        binding.layoutNotFound.visibility = View.VISIBLE
+    }
+
+    private fun unDisplayUserNotFound() {
+        binding.layoutNotFound.visibility = View.GONE
     }
 
     override fun onDestroyView() {
