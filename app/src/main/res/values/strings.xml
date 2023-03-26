@@ -13,4 +13,7 @@
     <string name="no_follower">Sorry, this user does not currently have any followers.</string>
     <string name="no_following">Sorry, there are currently no accounts being followed by this user</string>
     <string name="dark_mode">Dark Mode</string>
+    <string name="profile">Profile</string>
+    <string name="setting_profile">Setting Profile</string>
+    <string name="tab_layout">Tab Layout</string>
 </resources>

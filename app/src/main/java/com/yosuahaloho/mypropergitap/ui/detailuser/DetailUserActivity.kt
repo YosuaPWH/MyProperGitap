@@ -1,9 +1,8 @@
 package com.yosuahaloho.mypropergitap.ui.detailuser
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
@@ -13,9 +12,9 @@ import com.yosuahaloho.mypropergitap.databinding.ActivityDetailUserBinding
 import com.yosuahaloho.mypropergitap.repos.local.entity.FavoriteUser
 import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragment
 import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.repositories.RepositoriesUser
-import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import com.yosuahaloho.mypropergitap.utils.Result
 import com.yosuahaloho.mypropergitap.utils.Util
+import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import timber.log.Timber
 
 class DetailUserActivity : AppCompatActivity() {
@@ -140,5 +139,10 @@ class DetailUserActivity : AppCompatActivity() {
             "Following",
             "Repositories"
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        username = null
     }
 }

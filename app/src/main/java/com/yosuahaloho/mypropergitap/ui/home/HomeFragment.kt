@@ -23,7 +23,6 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private lateinit var listUserAdapter: ListUserAdapter
-    private var username: String? = null
 
     private val homeViewModel by viewModels<HomeViewModel> {
         ViewModelFactory.getInstance(
@@ -54,10 +53,8 @@ class HomeFragment : Fragment() {
 
     private fun setSearchView() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(usernameQ: String): Boolean {
-                username = usernameQ
-                homeViewModel.searchUser(usernameQ).observeData("searchUser")
-//                binding.searchView.clearFocus()
+            override fun onQueryTextSubmit(username: String): Boolean {
+                homeViewModel.searchUser(username).observeData("searchUser", username)
                 return true
             }
 
@@ -68,7 +65,7 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun LiveData<Result<List<User>>>.observeData(functionName: String) {
+    private fun LiveData<Result<List<User>>>.observeData(functionName: String, username: String? = null) {
         this.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
@@ -97,16 +94,6 @@ class HomeFragment : Fragment() {
                 }
             }
         }
-    }
-
-    private fun displayUserNotFound(username: String) {
-        binding.txtNotFound.text = resources.getString(R.string.not_found, username.trim())
-        binding.rvUser.visibility = View.GONE
-        binding.layoutNotFound.visibility = View.VISIBLE
-    }
-
-    private fun unDisplayUserNotFound() {
-        binding.layoutNotFound.visibility = View.GONE
     }
 
     override fun onDestroyView() {

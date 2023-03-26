@@ -18,7 +18,7 @@ class ViewModelFactory private constructor(private val userRepository: UserRepos
     override fun <T : ViewModel> create(modelClass: Class<T>): T = when (modelClass) {
         HomeViewModel::class.java -> HomeViewModel(userRepository)
         FavoriteViewModel::class.java -> FavoriteViewModel(userRepository)
-        ProfileViewModel::class.java -> ProfileViewModel(storedPreferences)
+        ProfileViewModel::class.java -> ProfileViewModel(userRepository, storedPreferences)
         DetailUserViewModel::class.java -> DetailUserViewModel(userRepository)
         FollowViewModel::class.java -> FollowViewModel(userRepository)
         else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)

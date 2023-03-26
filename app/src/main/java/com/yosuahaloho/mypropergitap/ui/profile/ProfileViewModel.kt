@@ -1,11 +1,14 @@
 package com.yosuahaloho.mypropergitap.ui.profile
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.yosuahaloho.mypropergitap.repos.UserRepository
 import com.yosuahaloho.mypropergitap.utils.StoredPreferences
 import kotlinx.coroutines.launch
 
-class ProfileViewModel(private val pref: StoredPreferences) : ViewModel() {
+class ProfileViewModel(private val userRepository: UserRepository, private val pref: StoredPreferences) : ViewModel() {
 
     fun getThemeSettings(): LiveData<Boolean> {
         return pref.getThemeSetting().asLiveData()
@@ -16,4 +19,7 @@ class ProfileViewModel(private val pref: StoredPreferences) : ViewModel() {
             pref.saveThemeSetting(isDarkModeActive)
         }
     }
+
+    fun getDetailUser(username: String) = userRepository.getDetailUser(username).asLiveData()
+
 }
