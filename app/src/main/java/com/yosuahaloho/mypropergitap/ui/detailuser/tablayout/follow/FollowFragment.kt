@@ -70,6 +70,21 @@ class FollowFragment : Fragment() {
                     if (it.data.isNotEmpty()) {
                         followUserAdapter.submitList(it.data)
                         binding.rvUserFollow.adapter = followUserAdapter
+
+                        followUserAdapter.setOnUserClickCallback(object : ListUserAdapter.OnUserClickCallback {
+                            override fun onUserClicked(
+                                data: User,
+                                isHomeFragments: Boolean,
+                                isFavoriteFragments: Boolean
+                            ) {
+                                Util.onUserClickedToDetailActivity(
+                                    data,
+                                    isHomeFragments,
+                                    isFavoriteFragments,
+                                    this@FollowFragment
+                                )
+                            }
+                        })
                     } else {
                         Util.displayNoUser(
                             viewToGone = binding.rvUserFollow,

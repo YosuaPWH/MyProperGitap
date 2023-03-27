@@ -1,31 +1,50 @@
 package com.yosuahaloho.mypropergitap.utils
 
-import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.yosuahaloho.mypropergitap.databinding.LastButtonBinding
 import com.yosuahaloho.mypropergitap.databinding.UserItemListBinding
 import com.yosuahaloho.mypropergitap.repos.model.User
-import com.yosuahaloho.mypropergitap.ui.detailuser.DetailUserActivity
-import com.yosuahaloho.mypropergitap.ui.favorite.FavoriteFragmentDirections
-import com.yosuahaloho.mypropergitap.ui.home.HomeFragmentDirections
+import timber.log.Timber
 
-class ListUserAdapter(private val isHomeFragments: Boolean, private val isFavoriteFragments: Boolean) :
-    RecyclerView.Adapter<ListUserAdapter.ListUserViewHolder>() {
+class ListUserAdapter(
+    private val isHomeFragments: Boolean,
+    private val isFavoriteFragments: Boolean
+) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items = mutableListOf<User>()
+    private lateinit var onItemClickCallback: OnUserClickCallback
 
     inner class ListUserViewHolder(val binding: UserItemListBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListUserViewHolder {
-        val viewHolder =
-            UserItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ListUserViewHolder(viewHolder)
+    inner class LoadMoreButtonViewHolder(val binding: LastButtonBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            REGULAR_ITEM -> {
+                val viewHolder = UserItemListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                ListUserViewHolder(viewHolder)
+            }
+            ADD_BUTTON_ITEM -> {
+                val addButtonViewHolder = LastButtonBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                LoadMoreButtonViewHolder(addButtonViewHolder)
+            }
+            else -> throw IllegalArgumentException("Tidak diketahui")
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position < items.size) {
+            REGULAR_ITEM
+        } else {
+            ADD_BUTTON_ITEM
+        }
     }
 
     fun submitList(newList: List<User>) {
@@ -36,55 +55,42 @@ class ListUserAdapter(private val isHomeFragments: Boolean, private val isFavori
         diffResult.dispatchUpdatesTo(this)
     }
 
-    override fun onBindViewHolder(holder: ListUserViewHolder, position: Int) {
-        val data = items[position]
 
-        holder.binding.apply {
-            tvUsername.text = data.username
-            Glide
-                .with(holder.itemView.context)
-                .load(data.avatar_url)
-                .into(imgAkun)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
-            root.setOnClickListener {
-                if (isHomeFragments) {
-                    val toDetailUserActivity =
-                        HomeFragmentDirections.actionNavigationHomeToDetailUserActivity()
-                    toDetailUserActivity.username = data.username
-                    it.findNavController().navigate(toDetailUserActivity)
-                } else if (isFavoriteFragments) {
-                    val toDetailUserActivity =
-                        FavoriteFragmentDirections.actionNavigationFavoriteToDetailUserActivity()
-                    toDetailUserActivity.username = data.username
-                    it.findNavController().navigate(toDetailUserActivity)
-                } else {
-                    val intent = Intent(it.context, DetailUserActivity::class.java)
-                    val bundle = Bundle().apply { putString("username", data.username) }
-                    intent.putExtras(bundle)
-                    it.context.startActivity(intent)
+        if (holder is ListUserViewHolder) {
+            val data = items[position]
+            holder.binding.apply {
+                tvUsername.text = data.username
+                Glide
+                    .with(holder.itemView.context)
+                    .load(data.avatar_url)
+                    .into(imgAkun)
+
+                root.setOnClickListener {
+                    onItemClickCallback.onUserClicked(data, isHomeFragments, isFavoriteFragments)
                 }
             }
+        } else if (holder is LoadMoreButtonViewHolder) {
+            holder.binding.btnLoadMore.setOnClickListener {
+                Timber.d("DIKLIK")
+            }
         }
+
     }
 
-    override fun getItemCount(): Int = items.size
+    override fun getItemCount(): Int = items.size + 1
 
-    private class MyDiffCallback(private val oldList: List<User>, private val newList: List<User>) : DiffUtil.Callback() {
+    interface OnUserClickCallback {
+        fun onUserClicked(data: User, isHomeFragments: Boolean, isFavoriteFragments: Boolean)
+    }
 
-        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition].id == newList[newItemPosition].id
-        }
+    fun setOnUserClickCallback(onUserClickCallback: OnUserClickCallback) {
+        this.onItemClickCallback = onUserClickCallback
+    }
 
-        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-            return oldList[oldItemPosition] == newList[newItemPosition]
-        }
-
-        override fun getOldListSize(): Int {
-            return oldList.size
-        }
-
-        override fun getNewListSize(): Int {
-            return newList.size
-        }
+    companion object {
+        private const val REGULAR_ITEM = 0
+        private const val ADD_BUTTON_ITEM = 1
     }
 }

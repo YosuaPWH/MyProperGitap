@@ -16,4 +16,5 @@
     <string name="profile">Profile</string>
     <string name="setting_profile">Setting Profile</string>
     <string name="tab_layout">Tab Layout</string>
+    <string name="load_more">Load More..</string>
 </resources>

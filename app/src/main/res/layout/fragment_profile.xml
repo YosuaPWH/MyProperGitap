@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/shimmer_color"
     tools:context=".ui.profile.ProfileFragment">
 
     <LinearLayout
@@ -16,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
             android:layout_weight="7"
@@ -24,18 +23,9 @@
             android:textSize="30sp"
             android:textStyle="bold" />
 
-        <ImageButton
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:contentDescription="@string/setting_profile"
-            android:src="@drawable/ic_settings" />
-
     </LinearLayout>
 
-    <com.google.android.material.card.MaterialCardView
+    <androidx.cardview.widget.CardView
         android:id="@+id/materialCardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -170,7 +160,7 @@
 
         </LinearLayout>
 
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.cardview.widget.CardView>
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/detail_image"
@@ -192,8 +182,7 @@
         app:cardCornerRadius="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/materialCardView"
-        app:strokeColor="?attr/colorAccent">
+        app:layout_constraintTop_toBottomOf="@id/materialCardView">
 
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout_profile"
@@ -201,14 +190,11 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/materialCardView"
             app:tabGravity="fill"
-            app:tabIndicatorColor="?attr/colorAccent"
             app:tabIndicatorGravity="stretch"
             app:tabMaxWidth="0dp"
             app:tabMode="fixed"
             android:contentDescription="@string/tab_layout"
-            app:tabSelectedTextColor="@color/white"
-            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
-            app:tabTextColor="@color/purple_200" />
+            app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget" />
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -219,7 +205,7 @@
         android:layout_marginTop="5dp"
         app:layout_constraintBottom_toTopOf="@+id/switch_theme"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginHorizontal="16dp"
+        android:layout_marginHorizontal="10dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_tab" />
 

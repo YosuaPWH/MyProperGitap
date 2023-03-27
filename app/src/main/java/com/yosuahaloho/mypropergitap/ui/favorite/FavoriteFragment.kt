@@ -69,6 +69,21 @@ class FavoriteFragment : Fragment() {
                         }
                         favoriteUserAdapter.submitList(items)
                         binding.rvUserFavorite.adapter = favoriteUserAdapter
+
+                        favoriteUserAdapter.setOnUserClickCallback(object : ListUserAdapter.OnUserClickCallback {
+                            override fun onUserClicked(
+                                data: User,
+                                isHomeFragments: Boolean,
+                                isFavoriteFragments: Boolean
+                            ) {
+                                Util.onUserClickedToDetailActivity(
+                                    data,
+                                    isHomeFragments,
+                                    isFavoriteFragments,
+                                    this@FavoriteFragment
+                                )
+                            }
+                        })
                     } else {
                         Util.displayNoUser(
                             viewToGone = binding.rvUserFavorite,

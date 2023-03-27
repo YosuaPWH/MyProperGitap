@@ -47,7 +47,6 @@ class ProfileFragment : Fragment() {
                     Glide
                         .with(this)
                         .load(it.data.avatar_url)
-                        .placeholder(android.R.drawable.btn_star)
                         .into(binding.detailImage)
 
                     binding.detailName.text = it.data.name

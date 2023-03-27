@@ -1,12 +1,16 @@
 package com.yosuahaloho.mypropergitap.utils
 
+import android.content.Intent
+import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.facebook.shimmer.ShimmerFrameLayout
-import com.yosuahaloho.mypropergitap.R
-import com.yosuahaloho.mypropergitap.ui.home.HomeFragment
+import com.yosuahaloho.mypropergitap.repos.model.User
+import com.yosuahaloho.mypropergitap.ui.detailuser.DetailUserActivity
+import com.yosuahaloho.mypropergitap.ui.favorite.FavoriteFragmentDirections
+import com.yosuahaloho.mypropergitap.ui.home.HomeFragmentDirections
 
 object Util {
 
@@ -38,6 +42,25 @@ object Util {
 
     fun unDisplayNoUser(noUserView: View) {
         noUserView.visibility = View.GONE
+    }
+
+    fun onUserClickedToDetailActivity(data: User, isHomeFragments: Boolean, isFavoriteFragments: Boolean, fragment: Fragment) {
+        if (isHomeFragments) {
+            val toDetailUserActivity =
+                HomeFragmentDirections.actionNavigationHomeToDetailUserActivity()
+            toDetailUserActivity.username = data.username
+            fragment.findNavController().navigate(toDetailUserActivity)
+        } else if (isFavoriteFragments) {
+            val toDetailUserActivity =
+                FavoriteFragmentDirections.actionNavigationFavoriteToDetailUserActivity()
+            toDetailUserActivity.username = data.username
+            fragment.findNavController().navigate(toDetailUserActivity)
+        } else {
+            val intent = Intent(fragment.requireContext(), DetailUserActivity::class.java)
+            val bundle = Bundle().apply { putString("username", data.username) }
+            intent.putExtras(bundle)
+            fragment.startActivity(intent)
+        }
     }
 
 }

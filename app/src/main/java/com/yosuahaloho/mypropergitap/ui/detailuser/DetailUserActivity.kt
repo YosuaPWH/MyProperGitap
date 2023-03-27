@@ -123,7 +123,8 @@ class DetailUserActivity : AppCompatActivity() {
         }
         
         binding.fabFavorite.setOnClickListener {
-            if (!btnFavorite) {
+            btnFavorite = !btnFavorite
+            if (btnFavorite) {
                 detailUserViewModel.addToFavorite(user = FavoriteUser(username, avatar_url))
                 binding.fabFavorite.setImageResource(R.drawable.ic_filled_favorite)
             } else {

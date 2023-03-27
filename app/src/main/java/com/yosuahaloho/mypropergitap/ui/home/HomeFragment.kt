@@ -75,6 +75,21 @@ class HomeFragment : Fragment() {
                     if (it.data.isNotEmpty()) {
                         listUserAdapter.submitList(it.data)
                         binding.rvUser.adapter = listUserAdapter
+
+                        listUserAdapter.setOnUserClickCallback(object : ListUserAdapter.OnUserClickCallback {
+                            override fun onUserClicked(
+                                data: User,
+                                isHomeFragments: Boolean,
+                                isFavoriteFragments: Boolean
+                            ) {
+                                Util.onUserClickedToDetailActivity(
+                                    data,
+                                    isHomeFragments,
+                                    isFavoriteFragments,
+                                    this@HomeFragment
+                                )
+                            }
+                        })
                     } else {
                         Util.displayNoUser(
                             viewToGone = binding.rvUser,
