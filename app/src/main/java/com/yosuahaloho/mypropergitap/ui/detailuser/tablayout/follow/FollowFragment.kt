@@ -16,6 +16,7 @@ import com.yosuahaloho.mypropergitap.utils.ListUserAdapter
 import com.yosuahaloho.mypropergitap.utils.Util
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import timber.log.Timber
+import kotlin.time.Duration.Companion.days
 
 class FollowFragment : Fragment() {
 
@@ -38,11 +39,17 @@ class FollowFragment : Fragment() {
         Util.startShimmer(binding.rvUserFollow, binding.loadingShimmer)
 
         binding.rvUserFollow.layoutManager = LinearLayoutManager(requireContext())
-        followUserAdapter = ListUserAdapter(isHomeFragments = false, isFavoriteFragments = false)
+        followUserAdapter = ListUserAdapter(
+            isHomeFragments = false,
+            isFavoriteFragments = false,
+            btnLoadMoreClicked = {
+                Timber.d("Follow CLICKED")
+            })
         binding.rvUserFollow.adapter = followUserAdapter
 
         val username = arguments?.getString(DETAIL_USERNAME)
         val sectionNumberPager = arguments?.getInt(SECTION_NUMBER_PAGER)
+
 
         Timber.d("dawdaw $username")
         Timber.d("dagfaw $sectionNumberPager")
@@ -71,7 +78,8 @@ class FollowFragment : Fragment() {
                         followUserAdapter.submitList(it.data)
                         binding.rvUserFollow.adapter = followUserAdapter
 
-                        followUserAdapter.setOnUserClickCallback(object : ListUserAdapter.OnUserClickCallback {
+                        followUserAdapter.setOnUserClickCallback(object :
+                            ListUserAdapter.OnUserClickCallback {
                             override fun onUserClicked(
                                 data: User,
                                 isHomeFragments: Boolean,
@@ -85,6 +93,17 @@ class FollowFragment : Fragment() {
                                 )
                             }
                         })
+                        if (functionName == "getFollowers") {
+                            val numFollowers = arguments?.getInt(NUM_FOLLOWERS)
+                            numFollowers?.let { countFollowers ->
+                                ListUserAdapter.isStillLoadMore = followUserAdapter.getCurrentSize() < countFollowers
+                            }
+                        } else if (functionName == "getFollowing") {
+                            val numFollowing = arguments?.getInt(NUM_FOLLOWING)
+                            numFollowing?.let { countFollowing ->
+                                ListUserAdapter.isStillLoadMore = followUserAdapter.getCurrentSize() < countFollowing
+                            }
+                        }
                     } else {
                         Util.displayNoUser(
                             viewToGone = binding.rvUserFollow,
@@ -110,6 +129,8 @@ class FollowFragment : Fragment() {
     companion object {
         const val SECTION_NUMBER_PAGER = "SECTION_NUMBER_PAGER"
         const val DETAIL_USERNAME = "DETAIL_USERNAME"
+        const val NUM_FOLLOWERS = "NUM_FOLLOWERS"
+        const val NUM_FOLLOWING = "NUM_FOLLOWING"
     }
 
     override fun onDestroy() {

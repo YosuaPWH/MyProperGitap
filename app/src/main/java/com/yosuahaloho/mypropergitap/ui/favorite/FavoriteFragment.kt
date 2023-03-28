@@ -36,7 +36,12 @@ class FavoriteFragment : Fragment() {
     ): View {
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
         binding.rvUserFavorite.layoutManager = LinearLayoutManager(requireContext())
-        favoriteUserAdapter = ListUserAdapter(isHomeFragments = false, isFavoriteFragments = true)
+        favoriteUserAdapter = ListUserAdapter(
+            isHomeFragments = false,
+            isFavoriteFragments = true,
+            btnLoadMoreClicked = {
+                Timber.d("Favorite CLICKED")
+            })
         binding.rvUserFavorite.adapter = favoriteUserAdapter
 
         Util.startShimmer(binding.rvUserFavorite, binding.loadingShimmer)
@@ -70,7 +75,8 @@ class FavoriteFragment : Fragment() {
                         favoriteUserAdapter.submitList(items)
                         binding.rvUserFavorite.adapter = favoriteUserAdapter
 
-                        favoriteUserAdapter.setOnUserClickCallback(object : ListUserAdapter.OnUserClickCallback {
+                        favoriteUserAdapter.setOnUserClickCallback(object :
+                            ListUserAdapter.OnUserClickCallback {
                             override fun onUserClicked(
                                 data: User,
                                 isHomeFragments: Boolean,

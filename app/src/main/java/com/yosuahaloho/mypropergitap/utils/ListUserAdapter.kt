@@ -1,6 +1,7 @@
 package com.yosuahaloho.mypropergitap.utils
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -11,6 +12,7 @@ import com.yosuahaloho.mypropergitap.repos.model.User
 import timber.log.Timber
 
 class ListUserAdapter(
+    private val btnLoadMoreClicked: () -> Unit,
     private val isHomeFragments: Boolean,
     private val isFavoriteFragments: Boolean
 ) :
@@ -18,6 +20,7 @@ class ListUserAdapter(
 
     private var items = mutableListOf<User>()
     private lateinit var onItemClickCallback: OnUserClickCallback
+//    private lateinit var onLoadMoreButtonClicked: OnUserClickCallback
 
     inner class ListUserViewHolder(val binding: UserItemListBinding) :
         RecyclerView.ViewHolder(binding.root)
@@ -55,6 +58,10 @@ class ListUserAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    fun getCurrentSize(): Int {
+        return items.size
+    }
+
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
 
@@ -72,17 +79,25 @@ class ListUserAdapter(
                 }
             }
         } else if (holder is LoadMoreButtonViewHolder) {
+            if (isStillLoadMore) {
+                holder.binding.btnLoadMore.visibility = View.VISIBLE
+            } else {
+                holder.binding.btnLoadMore.visibility = View.GONE
+            }
+
             holder.binding.btnLoadMore.setOnClickListener {
-                Timber.d("DIKLIK")
+//                Timber.d("DIKLIK")
+                btnLoadMoreClicked()
             }
         }
 
     }
 
-    override fun getItemCount(): Int = items.size + 1
+    override fun getItemCount(): Int = if (isStillLoadMore) items.size + 1 else items.size
 
     interface OnUserClickCallback {
         fun onUserClicked(data: User, isHomeFragments: Boolean, isFavoriteFragments: Boolean)
+
     }
 
     fun setOnUserClickCallback(onUserClickCallback: OnUserClickCallback) {
@@ -92,5 +107,6 @@ class ListUserAdapter(
     companion object {
         private const val REGULAR_ITEM = 0
         private const val ADD_BUTTON_ITEM = 1
+        var isStillLoadMore = false
     }
 }

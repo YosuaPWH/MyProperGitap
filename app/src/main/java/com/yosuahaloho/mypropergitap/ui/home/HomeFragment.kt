@@ -17,12 +17,15 @@ import com.yosuahaloho.mypropergitap.utils.Result
 import com.yosuahaloho.mypropergitap.utils.Util
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import timber.log.Timber
+import kotlin.time.Duration.Companion.days
 
 class HomeFragment : Fragment() {
 
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+    private var countSearch: Int? = null
     private lateinit var listUserAdapter: ListUserAdapter
+
 
     private val homeViewModel by viewModels<HomeViewModel> {
         ViewModelFactory.getInstance(
@@ -38,7 +41,13 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         binding.rvUser.layoutManager = LinearLayoutManager(requireContext())
-        listUserAdapter = ListUserAdapter(isHomeFragments = true, isFavoriteFragments = false)
+        listUserAdapter = ListUserAdapter(
+            isHomeFragments = true,
+            isFavoriteFragments = false,
+            btnLoadMoreClicked = {
+                Timber.d("Search CLICKED")
+            }
+        )
         binding.rvUser.adapter = listUserAdapter
 
         Util.startShimmer(binding.rvUser, binding.loadingShimmer)
@@ -55,6 +64,9 @@ class HomeFragment : Fragment() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(username: String): Boolean {
                 homeViewModel.searchUser(username).observeData("searchUser", username)
+                homeViewModel.getSearchUserCount(username).observe(viewLifecycleOwner) {
+                    countSearch = it
+                }
                 return true
             }
 
@@ -65,7 +77,10 @@ class HomeFragment : Fragment() {
         })
     }
 
-    private fun LiveData<Result<List<User>>>.observeData(functionName: String, username: String? = null) {
+    private fun LiveData<Result<List<User>>>.observeData(
+        functionName: String,
+        username: String? = null
+    ) {
         this.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
@@ -76,7 +91,8 @@ class HomeFragment : Fragment() {
                         listUserAdapter.submitList(it.data)
                         binding.rvUser.adapter = listUserAdapter
 
-                        listUserAdapter.setOnUserClickCallback(object : ListUserAdapter.OnUserClickCallback {
+                        listUserAdapter.setOnUserClickCallback(object :
+                            ListUserAdapter.OnUserClickCallback {
                             override fun onUserClicked(
                                 data: User,
                                 isHomeFragments: Boolean,
@@ -90,6 +106,13 @@ class HomeFragment : Fragment() {
                                 )
                             }
                         })
+
+                        countSearch?.let { count ->
+                            if (listUserAdapter.getCurrentSize() < count) {
+                                ListUserAdapter.isStillLoadMore = true
+//                                listUserAdapter.itemCount
+                            }
+                        }
                     } else {
                         Util.displayNoUser(
                             viewToGone = binding.rvUser,

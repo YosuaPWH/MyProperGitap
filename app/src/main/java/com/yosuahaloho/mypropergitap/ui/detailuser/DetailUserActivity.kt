@@ -21,6 +21,8 @@ class DetailUserActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDetailUserBinding
     private var username: String? = null
+    private var numFollowers: Int? = null
+    private var numFollowing: Int? = null
 
     private val detailUserViewModel by viewModels<DetailUserViewModel> {
         ViewModelFactory.getInstance(
@@ -58,7 +60,9 @@ class DetailUserActivity : AppCompatActivity() {
 
                     binding.detailName.text = it.data.name
                     binding.detailFollowersSize.text = it.data.followers.toString()
+                    numFollowers = it.data.followers
                     binding.detailFollowingSize.text = it.data.following.toString()
+                    numFollowing = it.data.following
                     binding.detailPublicRepos.text = it.data.public_repos.toString()
 
                     setFavorite(username, it.data.avatar_url)
@@ -94,6 +98,7 @@ class DetailUserActivity : AppCompatActivity() {
                     fragment.arguments = Bundle().apply {
                         putString(FollowFragment.DETAIL_USERNAME, username)
                         putInt(FollowFragment.SECTION_NUMBER_PAGER, position)
+                        numFollowers?.let { putInt(FollowFragment.NUM_FOLLOWERS, it) }
                     }
                 }
                 1 -> {
@@ -101,6 +106,7 @@ class DetailUserActivity : AppCompatActivity() {
                     fragment.arguments = Bundle().apply {
                         putString(FollowFragment.DETAIL_USERNAME, username)
                         putInt(FollowFragment.SECTION_NUMBER_PAGER, position)
+                        numFollowing?.let { putInt(FollowFragment.NUM_FOLLOWING, it) }
                     }
                 }
                 2 -> fragment = RepositoriesUser()

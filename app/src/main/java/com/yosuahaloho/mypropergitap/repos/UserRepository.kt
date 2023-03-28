@@ -54,6 +54,14 @@ class UserRepository private constructor(
     }.flowOn(Dispatchers.Default)
 
     /**
+     * This function will return total count of search user
+     */
+    fun getSearchUserCount(username: String) = flow {
+        val response = remote.getSearchUser(username)
+        emit(response.total_count)
+    }.flowOn(Dispatchers.Default)
+
+    /**
      * This function will return list of followers user based on username
      */
     fun getFollowers(username: String) = flow {
