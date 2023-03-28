@@ -4,13 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.lifecycleScope
 import com.yosuahaloho.mypropergitap.MainActivity
-import com.yosuahaloho.mypropergitap.R
 import com.yosuahaloho.mypropergitap.databinding.ActivitySplashBinding
 import com.yosuahaloho.mypropergitap.ui.profile.ProfileViewModel
 import kotlinx.coroutines.delay
@@ -21,7 +18,7 @@ class SplashActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashBinding
 
-    private val getProfileViewModel by viewModels<ProfileViewModel> {
+    private val getProfileViewModels by viewModels<ProfileViewModel> {
         ViewModelFactory.getInstance(
             this
         )
@@ -30,7 +27,7 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getProfileViewModel.getThemeSettings().observe(this) { isDarkModeActive ->
+        getProfileViewModels.getThemeSettings().observe(this) { isDarkModeActive ->
             if (isDarkModeActive) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             } else {
