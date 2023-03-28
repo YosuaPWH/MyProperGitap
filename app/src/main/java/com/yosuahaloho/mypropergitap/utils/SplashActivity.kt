@@ -35,7 +35,7 @@ class SplashActivity : AppCompatActivity() {
             }
         }
         binding = ActivitySplashBinding.inflate(layoutInflater)
-
+        val adwad = "dawdawdabfv"
         setContentView(binding.root)
 
 
