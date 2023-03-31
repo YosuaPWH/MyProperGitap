@@ -16,7 +16,8 @@ interface ApiService {
 
     @GET("search/users")
     suspend fun searchUser(
-        @Query("q") username: String
+        @Query("q") username: String,
+        @Query("page") page: Int
     ): ResponseSearch
 
     @GET("users/{username}")
@@ -26,11 +27,13 @@ interface ApiService {
 
     @GET("users/{username}/followers")
     suspend fun getFollowers(
-        @Path("username") username: String
+        @Path("username") username: String,
+        @Query("page") page: Int
     ): List<User>
 
     @GET("users/{username}/following")
     suspend fun getFollowing(
-        @Path("username") username: String
+        @Path("username") username: String,
+        @Query("page") page: Int
     ): List<User>
 }

@@ -43,10 +43,10 @@ class UserRepository private constructor(
     /**
      * This function will return user search results based on the query entered
      */
-    fun getSearchUser(username: String) = flow {
+    fun getSearchUser(username: String, page: Int) = flow {
         emit(Result.Loading)
         try {
-            val response = remote.getSearchUser(username)
+            val response = remote.getSearchUser(username, page)
             emit(Result.Success(response.items))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
@@ -56,18 +56,18 @@ class UserRepository private constructor(
     /**
      * This function will return total count of search user
      */
-    fun getSearchUserCount(username: String) = flow {
-        val response = remote.getSearchUser(username)
+    fun getSearchUserCount(username: String, page: Int = 1) = flow {
+        val response = remote.getSearchUser(username, page)
         emit(response.total_count)
     }.flowOn(Dispatchers.Default)
 
     /**
      * This function will return list of followers user based on username
      */
-    fun getFollowers(username: String) = flow {
+    fun getFollowers(username: String, page: Int) = flow {
         emit(Result.Loading)
         try {
-            val response = remote.getFollowers(username)
+            val response = remote.getFollowers(username, page)
             emit(Result.Success(response))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
@@ -77,10 +77,10 @@ class UserRepository private constructor(
     /**
      * This function will return list of following user based on username
      */
-    fun getFollowing(username: String) = flow {
+    fun getFollowing(username: String, page: Int) = flow {
         emit(Result.Loading)
         try {
-            val response = remote.getFollowing(username)
+            val response = remote.getFollowing(username, page)
             emit(Result.Success(response))
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))

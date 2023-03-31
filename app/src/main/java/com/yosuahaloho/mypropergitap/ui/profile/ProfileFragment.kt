@@ -1,6 +1,5 @@
 package com.yosuahaloho.mypropergitap.ui.profile
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,15 +11,18 @@ import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
 import com.yosuahaloho.mypropergitap.databinding.FragmentProfileBinding
 import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragment
-import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.repositories.RepositoriesUser
-import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import com.yosuahaloho.mypropergitap.utils.Result
+import com.yosuahaloho.mypropergitap.utils.Util
+import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
+import timber.log.Timber
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
     private var username: String? = null
+    private var numFollowers: Int? = null
+    private var numFollowing: Int? = null
 
     private val profileViewModel by viewModels<ProfileViewModel> {
         ViewModelFactory.getInstance(
@@ -33,15 +35,16 @@ class ProfileFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-        getDetailUser("YosuaPWH")
+        getDetailUser()
         return binding.root
     }
 
 
-    private fun getDetailUser(username: String) {
-        profileViewModel.getDetailUser(username).observe(viewLifecycleOwner) {
+    private fun getDetailUser() {
+        profileViewModel.getDetailUser("YosuaPWH").observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
+                    Util.stopShimmer(binding.realLayoutProfile, binding.loadingShimmer)
                     binding.detailUsername.text = username
 
                     Glide
@@ -51,14 +54,16 @@ class ProfileFragment : Fragment() {
 
                     binding.detailName.text = it.data.name
                     binding.detailFollowersSize.text = it.data.followers.toString()
+                    numFollowers = it.data.followers
                     binding.detailFollowingSize.text = it.data.following.toString()
+                    numFollowing = it.data.following
                     binding.detailPublicRepos.text = it.data.public_repos.toString()
                 }
                 is Result.Loading -> {
-
+                    Util.startShimmer(binding.realLayoutProfile, binding.loadingShimmer)
                 }
                 is Result.Error -> {
-
+                    Timber.d("Gagal menghubungkan ke jaringan...")
                 }
             }
         }
@@ -68,7 +73,6 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
 
-
         binding.switchTheme.setOnCheckedChangeListener { _, isChecked ->
             profileViewModel.saveThemeSetting(isChecked)
         }
@@ -76,10 +80,13 @@ class ProfileFragment : Fragment() {
         profileViewModel.getThemeSettings().observe(viewLifecycleOwner) { isDarkModeActive ->
             binding.switchTheme.isChecked = isDarkModeActive
         }
+        setTab()
+    }
 
+    private fun setTab() {
         binding.viewpagerProfile.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount(): Int {
-                return 3
+                return 2
             }
 
             override fun createFragment(position: Int): Fragment {
@@ -90,6 +97,7 @@ class ProfileFragment : Fragment() {
                         fragment.arguments = Bundle().apply {
                             putString(FollowFragment.DETAIL_USERNAME, "YosuaPWH")
                             putInt(FollowFragment.SECTION_NUMBER_PAGER, position)
+                            numFollowers?.let { putInt(FollowFragment.NUM_FOLLOWERS, it) }
                         }
                     }
                     1 -> {
@@ -97,9 +105,9 @@ class ProfileFragment : Fragment() {
                         fragment.arguments = Bundle().apply {
                             putString(FollowFragment.DETAIL_USERNAME, "YosuaPWH")
                             putInt(FollowFragment.SECTION_NUMBER_PAGER, position)
+                            numFollowing?.let { putInt(FollowFragment.NUM_FOLLOWING, it) }
                         }
                     }
-                    2 -> fragment = RepositoriesUser()
                 }
                 return fragment as Fragment
             }
@@ -108,16 +116,12 @@ class ProfileFragment : Fragment() {
         TabLayoutMediator(binding.tabLayoutProfile, binding.viewpagerProfile) { tab, position ->
             tab.text = TITLE_PAGER[position]
         }.attach()
-
     }
-
-
 
     companion object {
         private val TITLE_PAGER = arrayOf(
             "Followers",
-            "Following",
-            "Repositories"
+            "Following"
         )
     }
 
@@ -125,5 +129,4 @@ class ProfileFragment : Fragment() {
         super.onDestroy()
         _binding = null
     }
-
 }

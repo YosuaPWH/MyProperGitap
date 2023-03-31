@@ -6,8 +6,8 @@ import com.yosuahaloho.mypropergitap.repos.UserRepository
 
 class FollowViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    fun getFollowers(username: String) = userRepository.getFollowers(username).asLiveData()
+    fun getFollowers(username: String, page: Int) = userRepository.getFollowers(username, page).asLiveData()
 
-    fun getFollowing(username: String) = userRepository.getFollowing(username).asLiveData()
+    fun getFollowing(username: String, page: Int) = userRepository.getFollowing(username, page).asLiveData()
 
 }

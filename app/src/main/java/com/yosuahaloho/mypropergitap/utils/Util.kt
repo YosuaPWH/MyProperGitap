@@ -9,7 +9,9 @@ import androidx.navigation.fragment.findNavController
 import com.facebook.shimmer.ShimmerFrameLayout
 import com.yosuahaloho.mypropergitap.repos.model.User
 import com.yosuahaloho.mypropergitap.ui.detailuser.DetailUserActivity
+import com.yosuahaloho.mypropergitap.ui.favorite.FavoriteFragment
 import com.yosuahaloho.mypropergitap.ui.favorite.FavoriteFragmentDirections
+import com.yosuahaloho.mypropergitap.ui.home.HomeFragment
 import com.yosuahaloho.mypropergitap.ui.home.HomeFragmentDirections
 
 object Util {
@@ -26,6 +28,17 @@ object Util {
         loadingLayout.startShimmer()
     }
 
+    fun showError(realLayout: View, loadingLayout: ShimmerFrameLayout, layoutError: View) {
+        realLayout.visibility = View.GONE
+        loadingLayout.visibility = View.GONE
+        loadingLayout.stopShimmer()
+        layoutError.visibility = View.VISIBLE
+    }
+
+    fun removeError(layoutError: View) {
+        layoutError.visibility = View.GONE
+    }
+
     fun displayNoUser(
         viewToGone: View,
         noUserView: View,
@@ -34,7 +47,8 @@ object Util {
         username: String? = null
     ) {
         if (stringResourceFollowFragment != null) {
-            textNoUserTextViewHomeFragment?.text = viewToGone.context.getString(stringResourceFollowFragment, username)
+            textNoUserTextViewHomeFragment?.text =
+                viewToGone.context.getString(stringResourceFollowFragment, username)
         }
         viewToGone.visibility = View.GONE
         noUserView.visibility = View.VISIBLE
@@ -44,23 +58,28 @@ object Util {
         noUserView.visibility = View.GONE
     }
 
-    fun onUserClickedToDetailActivity(data: User, isHomeFragments: Boolean, isFavoriteFragments: Boolean, fragment: Fragment) {
-        if (isHomeFragments) {
-            val toDetailUserActivity =
-                HomeFragmentDirections.actionNavigationHomeToDetailUserActivity()
-            toDetailUserActivity.username = data.username
-            fragment.findNavController().navigate(toDetailUserActivity)
-        } else if (isFavoriteFragments) {
-            val toDetailUserActivity =
-                FavoriteFragmentDirections.actionNavigationFavoriteToDetailUserActivity()
-            toDetailUserActivity.username = data.username
-            fragment.findNavController().navigate(toDetailUserActivity)
-        } else {
-            val intent = Intent(fragment.requireContext(), DetailUserActivity::class.java)
-            val bundle = Bundle().apply { putString("username", data.username) }
-            intent.putExtras(bundle)
-            fragment.startActivity(intent)
+    fun onUserClickedToDetailActivity(data: User, fragment: Fragment) {
+        when (fragment) {
+            is HomeFragment -> {
+                val toDetailUserActivity =
+                    HomeFragmentDirections.actionNavigationHomeToDetailUserActivity()
+                toDetailUserActivity.username = data.username
+                fragment.findNavController().navigate(toDetailUserActivity)
+            }
+            is FavoriteFragment -> {
+                val toDetailUserActivity =
+                    FavoriteFragmentDirections.actionNavigationFavoriteToDetailUserActivity()
+                toDetailUserActivity.username = data.username
+                fragment.findNavController().navigate(toDetailUserActivity)
+            }
+            else -> {
+                val intent = Intent(fragment.requireContext(), DetailUserActivity::class.java)
+                val bundle = Bundle().apply { putString("username", data.username) }
+                intent.putExtras(bundle)
+                fragment.startActivity(intent)
+            }
         }
     }
+
 
 }

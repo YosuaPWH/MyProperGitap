@@ -10,6 +10,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.yosuahaloho.mypropergitap.R
 import com.yosuahaloho.mypropergitap.databinding.ActivityDetailUserBinding
 import com.yosuahaloho.mypropergitap.repos.local.entity.FavoriteUser
+import com.yosuahaloho.mypropergitap.repos.model.DetailUser
 import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragment
 import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.repositories.RepositoriesUser
 import com.yosuahaloho.mypropergitap.utils.Result
@@ -42,7 +43,6 @@ class DetailUserActivity : AppCompatActivity() {
         Timber.d(username.toString())
         setTabViewPager()
 
-
     }
 
     private fun getDetailUser(username: String) {
@@ -50,21 +50,7 @@ class DetailUserActivity : AppCompatActivity() {
             when (it) {
                 is Result.Success -> {
                     Util.stopShimmer(binding.layoutDetail, binding.loadingShimmer)
-                    binding.detailUsername.text = username
-                    Timber.d(it.data.toString())
-                    Glide
-                        .with(this)
-                        .load(it.data.avatar_url)
-                        .placeholder(android.R.drawable.btn_star)
-                        .into(binding.detailImage)
-
-                    binding.detailName.text = it.data.name
-                    binding.detailFollowersSize.text = it.data.followers.toString()
-                    numFollowers = it.data.followers
-                    binding.detailFollowingSize.text = it.data.following.toString()
-                    numFollowing = it.data.following
-                    binding.detailPublicRepos.text = it.data.public_repos.toString()
-
+                    setDataUser(it.data)
                     setFavorite(username, it.data.avatar_url)
                 }
                 is Result.Loading -> {
@@ -77,6 +63,23 @@ class DetailUserActivity : AppCompatActivity() {
         }
     }
 
+    private fun setDataUser(data: DetailUser) {
+        binding.detailUsername.text = username
+        Timber.d(data.toString())
+        Glide
+            .with(this)
+            .load(data.avatar_url)
+            .placeholder(android.R.drawable.btn_star)
+            .into(binding.detailImage)
+
+        binding.detailName.text = data.name
+        binding.detailFollowersSize.text = data.followers.toString()
+        numFollowers = data.followers
+        binding.detailFollowingSize.text = data.following.toString()
+        numFollowing = data.following
+        binding.detailPublicRepos.text = data.public_repos.toString()
+    }
+
     private fun setTabViewPager() {
         binding.detailViewPager.adapter = fragmentStateAdapter
 
@@ -87,7 +90,7 @@ class DetailUserActivity : AppCompatActivity() {
 
     private val fragmentStateAdapter = object : FragmentStateAdapter(this) {
         override fun getItemCount(): Int {
-            return 3
+            return 2
         }
 
         override fun createFragment(position: Int): Fragment {
@@ -109,7 +112,6 @@ class DetailUserActivity : AppCompatActivity() {
                         numFollowing?.let { putInt(FollowFragment.NUM_FOLLOWING, it) }
                     }
                 }
-                2 -> fragment = RepositoriesUser()
             }
             return fragment as Fragment
         }
@@ -127,7 +129,7 @@ class DetailUserActivity : AppCompatActivity() {
                 binding.fabFavorite.setImageResource(R.drawable.ic_outlined_favorite)
             }
         }
-        
+
         binding.fabFavorite.setOnClickListener {
             btnFavorite = !btnFavorite
             if (btnFavorite) {
@@ -143,8 +145,7 @@ class DetailUserActivity : AppCompatActivity() {
     companion object {
         private val TITLE_PAGER = arrayOf(
             "Followers",
-            "Following",
-            "Repositories"
+            "Following"
         )
     }
 

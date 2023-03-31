@@ -4,17 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.yosuahaloho.mypropergitap.repos.UserRepository
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.count
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.first
 
 class HomeViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-
-
     fun getDefaultUser() = userRepository.getDefaultUser().asLiveData()
-    fun searchUser(username: String) = userRepository.getSearchUser(username).asLiveData()
+    fun searchUser(username: String, page: Int) = userRepository.getSearchUser(username, page).asLiveData()
 
-    fun getSearchUserCount(username: String) = userRepository.getSearchUserCount(username).asLiveData()
+    fun getSearchUserCountAsync(username: String) = viewModelScope.async {
+        userRepository.getSearchUserCount(username).first()
+    }
 
 }
