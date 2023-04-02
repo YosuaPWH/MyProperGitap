@@ -87,6 +87,9 @@ class UserRepository private constructor(
         }
     }.flowOn(Dispatchers.Default)
 
+    /**
+     * This function will add user to favorite database
+     */
     suspend fun addToFavorite(user: FavoriteUser) {
         try {
             local.addToFavorite(user)
@@ -95,6 +98,9 @@ class UserRepository private constructor(
         }
     }
 
+    /**
+     * This function will remvove user from favorite database
+     */
     suspend fun removeFromFavorite(user: FavoriteUser) {
         try {
             local.removeFromFavorite(user)
@@ -103,6 +109,9 @@ class UserRepository private constructor(
         }
     }
 
+    /**
+     * This function will return boolean if user exist in favorite database
+     */
     suspend fun isFavoriteUser(username: String): Boolean {
         return try {
             local.isFavoriteUser(username)
@@ -112,6 +121,9 @@ class UserRepository private constructor(
         }
     }
 
+    /**
+     * This function will return all data of user that inside favorite database
+     */
     fun getFavoriteUser() = flow {
         emit(Result.Loading)
         try {

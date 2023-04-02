@@ -26,9 +26,6 @@ class ListUserAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         items = list as ArrayList<User>
     }
 
-    fun clearData() {
-        items.clear()
-    }
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             REGULAR_ITEM -> {

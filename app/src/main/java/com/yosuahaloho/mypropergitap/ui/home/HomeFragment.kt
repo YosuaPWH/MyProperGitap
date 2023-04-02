@@ -30,6 +30,7 @@ class HomeFragment : Fragment() {
     private val searchData = arrayListOf<User>()
     private var loadDefaultUserUntilSearchHappen = true
     private var totalCountSearch = 0
+    private var isQuerySubmitted = false
     private val listUserAdapter by lazy { ListUserAdapter() }
 
     private val homeViewModel by viewModels<HomeViewModel> {
@@ -46,6 +47,7 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         binding.rvUser.layoutManager = LinearLayoutManager(requireContext())
         binding.rvUser.adapter = listUserAdapter
+        setSearchView()
         Util.startShimmer(binding.rvUser, binding.loadingShimmer)
         return binding.root
     }
@@ -53,18 +55,21 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         homeViewModel.getDefaultUser().observeData("getDefaultUser")
-        setSearchView()
     }
 
     private fun setSearchView() {
         binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                username = query
-                searchData.clear()
-                lifecycleScope.launch {
-                    totalCountSearch = homeViewModel.getSearchUserCountAsync(username).await()
-                    loadDefaultUserUntilSearchHappen = false
-                    homeViewModel.searchUser(username, 1).observeData("searchUser")
+                if (!isQuerySubmitted) {
+                    username = query
+                    searchData.clear()
+                    lifecycleScope.launch {
+                        totalCountSearch = homeViewModel.getSearchUserCountAsync(username).await()
+                        loadDefaultUserUntilSearchHappen = false
+                        homeViewModel.searchUser(username, 1).observeData("searchUser")
+                    }
+                    Timber.d("DIKLIK")
+                    isQuerySubmitted = true
                 }
                 return true
             }
@@ -97,6 +102,7 @@ class HomeFragment : Fragment() {
                         listUserAdapter.notifyDataSetChanged()
                         clickToDetailActivity()
                         onLoadMore()
+
                     } else {
                         Util.displayNoUser(
                             viewToGone = binding.rvUser,
@@ -106,6 +112,7 @@ class HomeFragment : Fragment() {
                             username = username,
                         )
                     }
+                    isQuerySubmitted = false
                 }
                 is Result.Loading -> {
                     Util.removeError(binding.layoutError)

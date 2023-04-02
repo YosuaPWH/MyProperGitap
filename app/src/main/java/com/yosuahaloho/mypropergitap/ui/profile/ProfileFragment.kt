@@ -9,8 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
 import com.google.android.material.tabs.TabLayoutMediator
+import com.yosuahaloho.mypropergitap.R
 import com.yosuahaloho.mypropergitap.databinding.FragmentProfileBinding
-import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragment
+import com.yosuahaloho.mypropergitap.ui.detailuser.follow.FollowFragment
 import com.yosuahaloho.mypropergitap.utils.Result
 import com.yosuahaloho.mypropergitap.utils.Util
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
@@ -20,7 +21,6 @@ class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-    private var username: String? = null
     private var numFollowers: Int? = null
     private var numFollowing: Int? = null
 
@@ -45,7 +45,7 @@ class ProfileFragment : Fragment() {
             when (it) {
                 is Result.Success -> {
                     Util.stopShimmer(binding.realLayoutProfile, binding.loadingShimmer)
-                    binding.detailUsername.text = username
+                    binding.detailUsername.text = resources.getText(R.string.username)
 
                     Glide
                         .with(this)

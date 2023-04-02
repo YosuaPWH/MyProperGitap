@@ -1,4 +1,4 @@
-package com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow
+package com.yosuahaloho.mypropergitap.ui.detailuser.follow
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData

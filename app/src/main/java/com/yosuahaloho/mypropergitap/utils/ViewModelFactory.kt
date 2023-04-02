@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.yosuahaloho.mypropergitap.di.Injector
 import com.yosuahaloho.mypropergitap.repos.UserRepository
 import com.yosuahaloho.mypropergitap.ui.detailuser.DetailUserViewModel
-import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowViewModel
+import com.yosuahaloho.mypropergitap.ui.detailuser.follow.FollowViewModel
 import com.yosuahaloho.mypropergitap.ui.favorite.FavoriteViewModel
 import com.yosuahaloho.mypropergitap.ui.home.HomeViewModel
 import com.yosuahaloho.mypropergitap.ui.profile.ProfileViewModel

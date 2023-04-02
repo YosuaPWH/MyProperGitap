@@ -11,8 +11,7 @@ import com.yosuahaloho.mypropergitap.R
 import com.yosuahaloho.mypropergitap.databinding.ActivityDetailUserBinding
 import com.yosuahaloho.mypropergitap.repos.local.entity.FavoriteUser
 import com.yosuahaloho.mypropergitap.repos.model.DetailUser
-import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.follow.FollowFragment
-import com.yosuahaloho.mypropergitap.ui.detailuser.tablayout.repositories.RepositoriesUser
+import com.yosuahaloho.mypropergitap.ui.detailuser.follow.FollowFragment
 import com.yosuahaloho.mypropergitap.utils.Result
 import com.yosuahaloho.mypropergitap.utils.Util
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory

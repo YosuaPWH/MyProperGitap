@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">MyProperGitap</string>
+    <string name="username">YosuaPWH</string>
     <string name="title_home">Home</string>
     <string name="title_favorite">Favorite</string>
     <string name="title_profil">Profil</string>
