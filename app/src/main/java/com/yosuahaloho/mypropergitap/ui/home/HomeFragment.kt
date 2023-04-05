@@ -16,7 +16,13 @@ import com.yosuahaloho.mypropergitap.databinding.FragmentHomeBinding
 import com.yosuahaloho.mypropergitap.repos.model.User
 import com.yosuahaloho.mypropergitap.utils.ListUserAdapter
 import com.yosuahaloho.mypropergitap.utils.Result
-import com.yosuahaloho.mypropergitap.utils.Util
+import com.yosuahaloho.mypropergitap.utils.Util.displayNoUser
+import com.yosuahaloho.mypropergitap.utils.Util.onUserClickedToDetailActivity
+import com.yosuahaloho.mypropergitap.utils.Util.removeError
+import com.yosuahaloho.mypropergitap.utils.Util.showError
+import com.yosuahaloho.mypropergitap.utils.Util.startShimmer
+import com.yosuahaloho.mypropergitap.utils.Util.stopShimmer
+import com.yosuahaloho.mypropergitap.utils.Util.unDisplayNoUser
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -48,7 +54,7 @@ class HomeFragment : Fragment() {
         binding.rvUser.layoutManager = LinearLayoutManager(requireContext())
         binding.rvUser.adapter = listUserAdapter
         setSearchView()
-        Util.startShimmer(binding.rvUser, binding.loadingShimmer)
+        startShimmer(binding.rvUser, binding.loadingShimmer)
         return binding.root
     }
 
@@ -87,8 +93,8 @@ class HomeFragment : Fragment() {
             when (it) {
                 is Result.Success -> {
                     Timber.d("$functionName size data -> ${it.data.size}")
-                    Util.removeError(binding.layoutError)
-                    Util.stopShimmer(binding.rvUser, binding.loadingShimmer)
+                    removeError(binding.layoutError)
+                    stopShimmer(binding.rvUser, binding.loadingShimmer)
                     if (it.data.isNotEmpty()) {
                         if (!loadDefaultUserUntilSearchHappen) {
                             searchData.addAll(it.data)
@@ -104,7 +110,7 @@ class HomeFragment : Fragment() {
                         onLoadMore()
 
                     } else {
-                        Util.displayNoUser(
+                        displayNoUser(
                             viewToGone = binding.rvUser,
                             noUserView = binding.layoutNotFound,
                             textNoUserTextViewHomeFragment = binding.txtNotFound,
@@ -115,13 +121,13 @@ class HomeFragment : Fragment() {
                     isQuerySubmitted = false
                 }
                 is Result.Loading -> {
-                    Util.removeError(binding.layoutError)
-                    Util.unDisplayNoUser(binding.layoutNotFound)
-                    Util.startShimmer(binding.rvUser, binding.loadingShimmer)
+                    removeError(binding.layoutError)
+                    unDisplayNoUser(binding.layoutNotFound)
+                    startShimmer(binding.rvUser, binding.loadingShimmer)
                 }
                 is Result.Error -> {
                     Timber.e("$functionName -> " + it.error)
-                    Util.showError(binding.rvUser, binding.loadingShimmer, binding.layoutError)
+                    showError(binding.rvUser, binding.loadingShimmer, binding.layoutError)
                 }
             }
         }
@@ -138,7 +144,7 @@ class HomeFragment : Fragment() {
     private fun clickToDetailActivity() {
         listUserAdapter.setOnUserClickCallback(object : ListUserAdapter.OnUserClickCallback {
             override fun onUserClicked(data: User) {
-                Util.onUserClickedToDetailActivity(data, this@HomeFragment)
+                onUserClickedToDetailActivity(data, this@HomeFragment)
             }
         })
     }

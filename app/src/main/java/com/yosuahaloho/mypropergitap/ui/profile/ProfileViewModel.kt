@@ -20,6 +20,6 @@ class ProfileViewModel(private val userRepository: UserRepository, private val p
         }
     }
 
-    fun getDetailUser(username: String) = userRepository.getDetailUser(username).asLiveData()
+    fun getDetailUser(username: String) = userRepository.getDetailUser(username)
 
 }

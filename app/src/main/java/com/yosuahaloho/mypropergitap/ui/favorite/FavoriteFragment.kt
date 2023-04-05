@@ -13,7 +13,13 @@ import com.yosuahaloho.mypropergitap.repos.local.entity.FavoriteUser
 import com.yosuahaloho.mypropergitap.repos.model.User
 import com.yosuahaloho.mypropergitap.utils.ListUserAdapter
 import com.yosuahaloho.mypropergitap.utils.Result
-import com.yosuahaloho.mypropergitap.utils.Util
+import com.yosuahaloho.mypropergitap.utils.Util.displayNoUser
+import com.yosuahaloho.mypropergitap.utils.Util.onUserClickedToDetailActivity
+import com.yosuahaloho.mypropergitap.utils.Util.removeError
+import com.yosuahaloho.mypropergitap.utils.Util.showError
+import com.yosuahaloho.mypropergitap.utils.Util.startShimmer
+import com.yosuahaloho.mypropergitap.utils.Util.stopShimmer
+import com.yosuahaloho.mypropergitap.utils.Util.unDisplayNoUser
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import timber.log.Timber
 
@@ -39,7 +45,7 @@ class FavoriteFragment : Fragment() {
         binding.rvUserFavorite.adapter = favoriteUserAdapter
         favoriteUserAdapter.isLoadMoreUser = false
 
-        Util.startShimmer(binding.rvUserFavorite, binding.loadingShimmer)
+        startShimmer(binding.rvUserFavorite, binding.loadingShimmer)
         return binding.root
     }
 
@@ -52,8 +58,8 @@ class FavoriteFragment : Fragment() {
         this.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
-                    Util.removeError(binding.layoutError)
-                    Util.stopShimmer(binding.rvUserFavorite, binding.loadingShimmer)
+                    removeError(binding.layoutError)
+                    stopShimmer(binding.rvUserFavorite, binding.loadingShimmer)
                     Timber.d("$functionName -> ${it.data}")
                     Timber.d("$functionName size data ->: ${it.data.size}")
 
@@ -71,20 +77,20 @@ class FavoriteFragment : Fragment() {
                         binding.rvUserFavorite.adapter = favoriteUserAdapter
                         clickToDetailActivityFromFavorite()
                     } else {
-                        Util.displayNoUser(
+                        displayNoUser(
                             viewToGone = binding.rvUserFavorite,
                             noUserView = binding.layoutNotFound,
                         )
                     }
                 }
                 is Result.Loading -> {
-                    Util.removeError(binding.layoutError)
-                    Util.unDisplayNoUser(binding.layoutNotFound)
-                    Util.startShimmer(binding.rvUserFavorite, binding.loadingShimmer)
+                    removeError(binding.layoutError)
+                    unDisplayNoUser(binding.layoutNotFound)
+                    startShimmer(binding.rvUserFavorite, binding.loadingShimmer)
                 }
                 is Result.Error -> {
                     Timber.e("$functionName -> " + it.error)
-                    Util.showError(
+                    showError(
                         binding.rvUserFavorite,
                         binding.loadingShimmer,
                         binding.layoutError
@@ -97,7 +103,7 @@ class FavoriteFragment : Fragment() {
     private fun clickToDetailActivityFromFavorite() {
         favoriteUserAdapter.setOnUserClickCallback(object : ListUserAdapter.OnUserClickCallback {
             override fun onUserClicked(data: User) {
-                Util.onUserClickedToDetailActivity(data, this@FavoriteFragment)
+                onUserClickedToDetailActivity(data, this@FavoriteFragment)
             }
         })
     }

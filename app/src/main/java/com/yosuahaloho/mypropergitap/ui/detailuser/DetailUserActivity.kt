@@ -13,7 +13,8 @@ import com.yosuahaloho.mypropergitap.repos.local.entity.FavoriteUser
 import com.yosuahaloho.mypropergitap.repos.model.DetailUser
 import com.yosuahaloho.mypropergitap.ui.detailuser.follow.FollowFragment
 import com.yosuahaloho.mypropergitap.utils.Result
-import com.yosuahaloho.mypropergitap.utils.Util
+import com.yosuahaloho.mypropergitap.utils.Util.startShimmer
+import com.yosuahaloho.mypropergitap.utils.Util.stopShimmer
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import timber.log.Timber
 
@@ -34,7 +35,7 @@ class DetailUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        Util.startShimmer(binding.layoutDetail, binding.loadingShimmer)
+        startShimmer(binding.layoutDetail, binding.loadingShimmer)
 
         username = intent.extras?.let { DetailUserActivityArgs.fromBundle(it).username }
 
@@ -48,12 +49,12 @@ class DetailUserActivity : AppCompatActivity() {
         detailUserViewModel.getDetailUser(username).observe(this) {
             when (it) {
                 is Result.Success -> {
-                    Util.stopShimmer(binding.layoutDetail, binding.loadingShimmer)
+                    stopShimmer(binding.layoutDetail, binding.loadingShimmer)
                     setDataUser(it.data)
                     setFavorite(username, it.data.avatar_url)
                 }
                 is Result.Loading -> {
-                    Util.startShimmer(binding.layoutDetail, binding.loadingShimmer)
+                    startShimmer(binding.layoutDetail, binding.loadingShimmer)
                 }
                 is Result.Error -> {
                     Timber.e(it.error)

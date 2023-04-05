@@ -13,7 +13,13 @@ import com.yosuahaloho.mypropergitap.databinding.FragmentFollowBinding
 import com.yosuahaloho.mypropergitap.repos.model.User
 import com.yosuahaloho.mypropergitap.utils.ListUserAdapter
 import com.yosuahaloho.mypropergitap.utils.Result
-import com.yosuahaloho.mypropergitap.utils.Util
+import com.yosuahaloho.mypropergitap.utils.Util.displayNoUser
+import com.yosuahaloho.mypropergitap.utils.Util.onUserClickedToDetailActivity
+import com.yosuahaloho.mypropergitap.utils.Util.removeError
+import com.yosuahaloho.mypropergitap.utils.Util.showError
+import com.yosuahaloho.mypropergitap.utils.Util.startShimmer
+import com.yosuahaloho.mypropergitap.utils.Util.stopShimmer
+import com.yosuahaloho.mypropergitap.utils.Util.unDisplayNoUser
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import timber.log.Timber
 
@@ -40,7 +46,7 @@ class FollowFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFollowBinding.inflate(inflater, container, false)
-        Util.startShimmer(binding.rvUserFollow, binding.loadingShimmer)
+        startShimmer(binding.rvUserFollow, binding.loadingShimmer)
 
         binding.rvUserFollow.layoutManager = LinearLayoutManager(requireContext())
         binding.rvUserFollow.adapter = followUserAdapter
@@ -51,12 +57,6 @@ class FollowFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        followUserAdapter.setLoadMoreClickCallback(object :
-            ListUserAdapter.OnLoadMoreClickCallBack {
-            override fun onLoadMoreClicked() {
-
-            }
-        })
     }
 
     private fun setTab() {
@@ -74,8 +74,8 @@ class FollowFragment : Fragment() {
         this.observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
-                    Util.stopShimmer(binding.rvUserFollow, binding.loadingShimmer)
-                    Util.removeError(binding.layoutError)
+                    stopShimmer(binding.rvUserFollow, binding.loadingShimmer)
+                    removeError(binding.layoutError)
                     if (it.data.isNotEmpty()) {
                         if (isFollowers) {
                             followersData.addAll(it.data)
@@ -88,7 +88,7 @@ class FollowFragment : Fragment() {
                         isLoadMore(isFollowers)
                         onLoadMoreUser(isFollowers)
                     } else {
-                        Util.displayNoUser(
+                        displayNoUser(
                             viewToGone = binding.rvUserFollow,
                             noUserView = binding.layoutNotFound,
                             stringResourceFollowFragment = if (isFollowers) {
@@ -99,13 +99,13 @@ class FollowFragment : Fragment() {
                     }
                 }
                 is Result.Loading -> {
-                    Util.removeError(binding.layoutError)
-                    Util.startShimmer(binding.rvUserFollow, binding.loadingShimmer)
-                    Util.unDisplayNoUser(binding.layoutNotFound)
+                    removeError(binding.layoutError)
+                    startShimmer(binding.rvUserFollow, binding.loadingShimmer)
+                    unDisplayNoUser(binding.layoutNotFound)
                 }
                 is Result.Error -> {
                     Timber.e(it.error)
-                    Util.showError(
+                    showError(
                         binding.rvUserFollow,
                         binding.loadingShimmer,
                         binding.layoutError
@@ -151,7 +151,7 @@ class FollowFragment : Fragment() {
     private fun clickToDetailActivityFromFollow() {
         followUserAdapter.setOnUserClickCallback(object : ListUserAdapter.OnUserClickCallback {
             override fun onUserClicked(data: User) {
-                Util.onUserClickedToDetailActivity(data, this@FollowFragment)
+                onUserClickedToDetailActivity(data, this@FollowFragment)
             }
         })
     }

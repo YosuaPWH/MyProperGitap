@@ -15,7 +15,7 @@ class DetailUserViewModel(private val userRepository: UserRepository) : ViewMode
     private val _isFavorite = MutableLiveData<Boolean>()
     val isFavorite: LiveData<Boolean> = _isFavorite
 
-    fun getDetailUser(username: String) = userRepository.getDetailUser(username).asLiveData()
+    fun getDetailUser(username: String) = userRepository.getDetailUser(username)
 
     fun addToFavorite(user: FavoriteUser) {
         viewModelScope.launch(Dispatchers.IO) {

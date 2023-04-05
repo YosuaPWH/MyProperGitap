@@ -9,8 +9,8 @@ import kotlinx.coroutines.flow.first
 
 class HomeViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    fun getDefaultUser() = userRepository.getDefaultUser().asLiveData()
-    fun searchUser(username: String, page: Int) = userRepository.getSearchUser(username, page).asLiveData()
+    fun getDefaultUser() = userRepository.getDefaultUser()
+    fun searchUser(username: String, page: Int) = userRepository.getSearchUser(username, page)
 
     fun getSearchUserCountAsync(username: String) = viewModelScope.async {
         userRepository.getSearchUserCount(username).first()

@@ -6,6 +6,6 @@ import com.yosuahaloho.mypropergitap.repos.UserRepository
 
 class FavoriteViewModel(private val userRepository: UserRepository) : ViewModel() {
 
-    fun getFavoriteUser() = userRepository.getFavoriteUser().asLiveData()
+    fun getFavoriteUser() = userRepository.getFavoriteUser()
 
 }

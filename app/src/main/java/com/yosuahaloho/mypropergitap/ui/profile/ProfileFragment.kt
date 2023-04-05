@@ -13,7 +13,8 @@ import com.yosuahaloho.mypropergitap.R
 import com.yosuahaloho.mypropergitap.databinding.FragmentProfileBinding
 import com.yosuahaloho.mypropergitap.ui.detailuser.follow.FollowFragment
 import com.yosuahaloho.mypropergitap.utils.Result
-import com.yosuahaloho.mypropergitap.utils.Util
+import com.yosuahaloho.mypropergitap.utils.Util.startShimmer
+import com.yosuahaloho.mypropergitap.utils.Util.stopShimmer
 import com.yosuahaloho.mypropergitap.utils.ViewModelFactory
 import timber.log.Timber
 
@@ -44,7 +45,7 @@ class ProfileFragment : Fragment() {
         profileViewModel.getDetailUser("YosuaPWH").observe(viewLifecycleOwner) {
             when (it) {
                 is Result.Success -> {
-                    Util.stopShimmer(binding.realLayoutProfile, binding.loadingShimmer)
+                    stopShimmer(binding.realLayoutProfile, binding.loadingShimmer)
                     binding.detailUsername.text = resources.getText(R.string.username)
 
                     Glide
@@ -60,7 +61,7 @@ class ProfileFragment : Fragment() {
                     binding.detailPublicRepos.text = it.data.public_repos.toString()
                 }
                 is Result.Loading -> {
-                    Util.startShimmer(binding.realLayoutProfile, binding.loadingShimmer)
+                    startShimmer(binding.realLayoutProfile, binding.loadingShimmer)
                 }
                 is Result.Error -> {
                     Timber.d("Gagal menghubungkan ke jaringan...")

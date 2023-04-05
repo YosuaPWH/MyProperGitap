@@ -1,5 +1,7 @@
 package com.yosuahaloho.mypropergitap.repos
 
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.liveData
 import com.yosuahaloho.mypropergitap.repos.local.LocalDataSource
 import com.yosuahaloho.mypropergitap.repos.local.entity.FavoriteUser
 import com.yosuahaloho.mypropergitap.repos.remote.RemoteDataSource
@@ -17,7 +19,7 @@ class UserRepository private constructor(
     /**
      * This Function returns the default list of users that will display in home
      */
-    fun getDefaultUser() = flow {
+    fun getDefaultUser() = liveData {
         emit(Result.Loading)
         try {
             val response = remote.getDefaultUser()
@@ -25,12 +27,12 @@ class UserRepository private constructor(
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
         }
-    }.flowOn(Dispatchers.Default)
+    }
 
     /**
      * This function will return detailed user data when one of the item lists clicked
      */
-    fun getDetailUser(username: String) = flow {
+    fun getDetailUser(username: String) = liveData {
         emit(Result.Loading)
         try {
             val response = remote.getDetailUser(username)
@@ -38,12 +40,12 @@ class UserRepository private constructor(
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
         }
-    }.flowOn(Dispatchers.Default)
+    }
 
     /**
      * This function will return user search results based on the query entered
      */
-    fun getSearchUser(username: String, page: Int) = flow {
+    fun getSearchUser(username: String, page: Int) = liveData {
         emit(Result.Loading)
         try {
             val response = remote.getSearchUser(username, page)
@@ -51,7 +53,7 @@ class UserRepository private constructor(
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
         }
-    }.flowOn(Dispatchers.Default)
+    }
 
     /**
      * This function will return total count of search user
@@ -64,7 +66,7 @@ class UserRepository private constructor(
     /**
      * This function will return list of followers user based on username
      */
-    fun getFollowers(username: String, page: Int) = flow {
+    fun getFollowers(username: String, page: Int) = liveData {
         emit(Result.Loading)
         try {
             val response = remote.getFollowers(username, page)
@@ -72,12 +74,12 @@ class UserRepository private constructor(
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
         }
-    }.flowOn(Dispatchers.Default)
+    }
 
     /**
      * This function will return list of following user based on username
      */
-    fun getFollowing(username: String, page: Int) = flow {
+    fun getFollowing(username: String, page: Int) = liveData {
         emit(Result.Loading)
         try {
             val response = remote.getFollowing(username, page)
@@ -85,7 +87,7 @@ class UserRepository private constructor(
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
         }
-    }.flowOn(Dispatchers.Default)
+    }
 
     /**
      * This function will add user to favorite database
@@ -124,7 +126,7 @@ class UserRepository private constructor(
     /**
      * This function will return all data of user that inside favorite database
      */
-    fun getFavoriteUser() = flow {
+    fun getFavoriteUser() = liveData {
         emit(Result.Loading)
         try {
             val res = local.getFavoriteUser()
@@ -132,7 +134,7 @@ class UserRepository private constructor(
         } catch (e: Exception) {
             emit(Result.Error(e.message.toString()))
         }
-    }.flowOn(Dispatchers.IO)
+    }
 
 
     companion object {
